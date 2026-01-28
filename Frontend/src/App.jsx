@@ -1,23 +1,27 @@
 import React from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ProviderContext } from './context/Usecontext'
 import Navbar from './common/Navbar'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import Login from './common/Login'
 import Register from './common/Register'
 
+
 const App = () => {
   return (
-    <div>
+    <ProviderContext>
       <BrowserRouter>
-      {/* <Navbar/> */}
+        {/* <Navbar />  */}
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/home' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          {/* <Route path="/addtocard" element={<AddToCart />} />
+          <Route path="/wishlist" element={<Wishlist />} /> */}
         </Routes>
       </BrowserRouter>
-    </div>
+    </ProviderContext>
   )
 }
 
