@@ -10,3 +10,5 @@ export const getBanner=async()=>{
   console.log(res.data);
   return res
 }
+
+export default apiInstance
