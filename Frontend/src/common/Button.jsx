@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Button = ({text,property}) => {
+const Button = ({text,property,btn}) => {
   return (
     <div className={`${property}`}>
-      <button>{text}</button>
+      <button className={`${btn}`}>{text}</button>
     </div>
   )
 }
