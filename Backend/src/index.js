@@ -1,7 +1,15 @@
-const expres=require("express")
-const dbConnected = require("./config/db")
+const express=require("express")
+const cors =require("cors")
+const dbConnected = require("./config/db");
+const bannerRoutes = require("./router/bannerRoute");
 require("dotenv").config()
-const app=expres()
+const app=express();
+app.use(express.json())
+app.use(cors())
+
+
+app.use("/api",bannerRoutes)
+
 
 
 dbConnected()
