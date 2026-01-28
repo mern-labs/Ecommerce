@@ -11,4 +11,14 @@ export const getBanner=async()=>{
   return res
 }
 
+export const register=async({name,email,password})=>{
+  const res=await apiInstance.post("/register",{name,email,password})
+  return res
+}
+
+export const login=async({email,password})=>{
+  const res=await apiInstance.post("/login",{email,password})
+  return res
+}
+
 export default apiInstance

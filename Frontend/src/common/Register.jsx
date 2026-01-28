@@ -1,82 +1,149 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import logo from "../assets/saree logo.jpg"
-import Button from './Button'
+import { register } from '../interceptor/interceptor'
 
 const Register = () => {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [mounted, setMounted] = useState(false)
 
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+    api: ""
+  })
+
+  const navigate = useNavigate()
+
+  // ✅ REGEX (IMPORTANT)
+  const nameRegex = /^[A-Za-z ]{3,}$/
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/
+
   useEffect(() => {
-    setMounted(true) // trigger fade-in
+    setMounted(true)
   }, [])
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault()
-    // Handle registration logic (API call)
-    console.log({ name, email, password })
+
+    let newErrors = {
+      name: "",
+      email: "",
+      password: "",
+      api: ""
+    }
+
+    if (!name) {
+      newErrors.name = "Name is required"
+    } else if (!nameRegex.test(name)) {
+      newErrors.name = "Name must be at least 3 letters"
+    }
+
+    if (!email) {
+      newErrors.email = "Email is required"
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Enter a valid email address"
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required"
+    } else if (!passwordRegex.test(password)) {
+      newErrors.password =
+        "Password must be 8+ chars, uppercase, lowercase, number & special character"
+    }
+
+    if (newErrors.name || newErrors.email || newErrors.password) {
+      setErrors(newErrors)
+      return
+    }
+
+    setErrors({
+      name: "",
+      email: "",
+      password: "",
+      api: ""
+    })
+
+    try {
+      const res = await register({ name, email, password })
+      console.log("Registered successfully", res.data)
+      navigate("/login")
+    } catch (error) {    
+      setErrors({
+        ...newErrors,
+        api: error.response?.data?.message || "Something went wrong"
+      })
+    }
   }
 
   return (
     <div className="min-h-screen bg-linear-to-r from-pink-50 via-yellow-50 to-red-50 flex items-center justify-center px-4">
       <div className={`bg-white shadow-2xl rounded-3xl w-full max-w-md p-8 transition-all duration-1000 ease-out ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
 
-        {/* Logo */}
         <div className="flex justify-center mb-6">
-          <img 
-            src={logo} 
-            alt="Saree Logo" 
-            className="h-20 w-auto object-contain animate-bounce-slow" 
-          />
+          <img src={logo} alt="Saree Logo" className="h-20" />
         </div>
 
-        {/* Heading */}
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6 animate-slide-up">
+        <h2 className="text-3xl font-bold text-center mb-6">
           Create Account
         </h2>
 
-        {/* Registration Form */}
-        <form className="flex flex-col gap-5" onSubmit={handleRegister}>
-          
+        <form className="flex flex-col gap-4" onSubmit={handleRegister}>
+
           <input
             type="text"
             placeholder="Full Name"
             value={name}
             onChange={e => setName(e.target.value)}
-            className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:outline-none transition-all duration-300 placeholder-gray-400"
-            required
+            className={`px-4 py-3 border rounded-xl ${
+              errors.name ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
 
           <input
-            type="email"
+            type="text"
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:outline-none transition-all duration-300 placeholder-gray-400"
-            required
+            className={`px-4 py-3 border rounded-xl ${
+              errors.email ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={e => setPassword(e.target.value)}
-            className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:outline-none transition-all duration-300 placeholder-gray-400"
-            required
+            className={`px-4 py-3 border rounded-xl ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
 
-          <Button 
-            text="Register" 
-            property="bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-center"
-          />
+          {/* ✅ Native submit button (important fix) */}
+          <button
+            type="submit"
+            className="bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl font-semibold shadow-lg cursor-pointer"
+          >
+            Register
+          </button>
+
+          {errors.api && (
+            <p className="text-red-600 text-sm text-center">{errors.api}</p>
+          )}
         </form>
 
-        {/* Optional Links */}
         <div className="mt-4 flex justify-between text-sm text-gray-500">
-          <Link to="/login" className="hover:text-pink-500 transition-colors">Already have an account?</Link>
-          <Link to="/help" className="hover:text-pink-500 transition-colors">Help</Link>
+          <Link to="/login">Already have an account?</Link>
+          <Link to="/help">Help</Link>
         </div>
 
       </div>
