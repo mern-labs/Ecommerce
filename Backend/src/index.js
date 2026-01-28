@@ -3,6 +3,7 @@ const cors =require("cors")
 const dbConnected = require("./config/db");
 const bannerRoutes = require("./router/bannerRoute");
 const userRoutes = require("./router/userRoutes");
+const productRoute = require("./router/productRoute");
 require("dotenv").config()
 const app=express();
 app.use(express.json())
@@ -11,7 +12,8 @@ app.use(cors())
 app.use("/uploads",express.static("uploads"))
 
 app.use("/api",bannerRoutes)
-app.use("/", userRoutes)
+app.use("/api", userRoutes)
+app.use("/api",productRoute)
 
 
 dbConnected()
