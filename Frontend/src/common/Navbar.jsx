@@ -3,6 +3,8 @@ import logo from "../assets/saree logo.jpg"
 import Button from './Button'
 import { Link, useNavigate } from 'react-router-dom'
 import { useData } from '../context/Usecontext'
+import addtocart from "../assets/addtocart.png"
+import wishlist from "../assets/wishlist.png"
 
 const Navbar = () => {
   const [offset, setOffset] = useState(0)
@@ -72,18 +74,35 @@ const Navbar = () => {
             ) : (
               // ✅ Add to Cart, Wishlist, and Profile + Logout after login
               <>
-                <Link to="/addtocard">
-                  <Button
-                    text="Add to Cart"
-                    property="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                  />
-                </Link>
-                <Link to="/wishlist">
-                  <Button
-                    text="Wishlist"
-                    property="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                  />
-                </Link>
+                <div className="flex gap-4 items-center">
+                  {/* Wishlist Icon */}
+                  <Link to="/wishlist" className="relative group">
+                    <img
+                      src={wishlist}
+                      alt="Wishlist"
+                      className="w-8 object-contain cursor-pointer transform transition-transform duration-300 ease-in-out group-hover:scale-110"
+                    />
+                    {/* Example badge, replace number with real count */}
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
+                      3
+                    </span>
+                  </Link>
+
+                  {/* Add to Cart Icon */}
+                  <Link to="/addtocard" className="relative group">
+                    <img
+                      src={addtocart}
+                      alt="Add to Cart"
+                      className="w-8 object-contain cursor-pointer transform transition-transform duration-300 ease-in-out group-hover:scale-110"
+                    />
+                    {/* Example badge, replace number with real count */}
+                    <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                      2
+                    </span>
+                  </Link>
+                </div>
+
+                {/* Profile + Logout */}
                 <div className="relative group">
                   <span className="cursor-pointer font-semibold">{user.name}</span>
                   <div className="absolute right-0 mt-2 w-24 bg-white text-black p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">

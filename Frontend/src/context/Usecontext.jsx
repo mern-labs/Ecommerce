@@ -23,6 +23,7 @@ export function ProviderContext({ children }) {
       try {
         const res = await getProducts()
         setProducts(res.data.data)
+        console.log("Products", res.data.data);
       } catch (err) {
         console.log(err.message)
       }
@@ -43,6 +44,29 @@ export function ProviderContext({ children }) {
     setUser(null)
   }
 
+
+  const addToCart = (product, quantity = 1) => {
+    setCart((prev) => {
+      const exist = prev.find((item) => item._id === product._id)
+      if (exist) {
+        return prev.map((item) =>
+          item._id === product._id
+            ? { ...item, quantity }
+            : item
+        )
+      }
+      return [...prev, { ...product, quantity }]
+    })
+  }
+
+  // ✅ Wishlist
+  const addToWishlist = (product) => {
+    setWishlist((prev) => {
+      if (prev.find((item) => item._id === product._id)) return prev
+      return [...prev, product]
+    })
+  }
+
   return (
     <DataContext.Provider
       value={{
@@ -51,6 +75,8 @@ export function ProviderContext({ children }) {
         products,
         login,
         logout,
+        addToCart,
+        addToWishlist
       }}
     >
       {children}
