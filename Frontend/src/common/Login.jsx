@@ -43,7 +43,7 @@ const Login = () => {
       // ✅ update context user
       login({ ...res.data.data }) 
 
-      navigate("/home")
+      navigate("/home")    
     } catch (error) {
       setErrors({ ...newErrors, api: error.response?.data?.message || "Invalid email or password" })
     }

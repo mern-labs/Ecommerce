@@ -6,57 +6,53 @@ const DataContext = createContext(null)
 export function ProviderContext({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [product, setProduct] = useState([])
+  const [products, setProducts] = useState([])
 
-  // Load user from localStorage
-  const fetchData = async () => {
-    try {
-      const storeData = localStorage.getItem('item')
-      setUser(storeData ? JSON.parse(storeData) : null)
-    } catch (error) {
-      console.log(error.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Fetch products
+  // 🔁 Restore user instantly
   useEffect(() => {
-    const products = async () => {
+    const storedUser = localStorage.getItem("user")
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+    setLoading(false)
+  }, [])
+
+  // 📦 Fetch products
+  useEffect(() => {
+    const fetchProducts = async () => {
       try {
         const res = await getProducts()
-        setProduct(res.data.data)
-      } catch (error) {
-        console.log(error.message)
+        setProducts(res.data.data)
+      } catch (err) {
+        console.log(err.message)
       }
     }
-    products()
+    fetchProducts()
   }, [])
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchData()
-    }, 400)
-    return () => clearTimeout(timer)
-  }, [])
-
+  // ✅ Login
   const login = (data) => {
-    localStorage.setItem("item", JSON.stringify(data))
+    localStorage.setItem("user", JSON.stringify(data))
     setUser(data)
-    setLoading(false)
   }
 
+  // 🚪 Logout
   const logout = () => {
-    setLoading(true)
-    localStorage.removeItem("item")
-    setTimeout(() => {
-      setUser(null)
-      setLoading(false)
-    }, 400)
+    localStorage.removeItem("user")
+    localStorage.removeItem("token")
+    setUser(null)
   }
 
   return (
-    <DataContext.Provider value={{ login, logout, user, loading, setLoading, product }}>
+    <DataContext.Provider
+      value={{
+        user,
+        loading,
+        products,
+        login,
+        logout,
+      }}
+    >
       {children}
     </DataContext.Provider>
   )

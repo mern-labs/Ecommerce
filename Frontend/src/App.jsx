@@ -1,27 +1,38 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { ProviderContext } from './context/Usecontext'
-import Navbar from './common/Navbar'
-import Home from './pages/Home'
-import Login from './common/Login'
-import Register from './common/Register'
+import React from "react"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { ProviderContext } from "./context/Usecontext"
 
+import Home from "./pages/Home"
+import Login from "./common/Login"
+import Register from "./common/Register"
+
+import ProtectedRoute from "./routes/ProtectedRoute"
+import MainLayout from "./layouts/MainLayout"
 
 const App = () => {
   return (
-    <ProviderContext>
-      <BrowserRouter>
-        {/* <Navbar />  */}
+    <BrowserRouter>
+      <ProviderContext>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          {/* <Route path="/addtocard" element={<AddToCart />} />
-          <Route path="/wishlist" element={<Wishlist />} /> */}
+
+          {/* ✅ Protected + Navbar */}
+          <Route
+            element={
+              <ProtectedRoute>
+                <MainLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+          </Route>
+
         </Routes>
-      </BrowserRouter>
-    </ProviderContext>
+      </ProviderContext>
+    </BrowserRouter>
   )
 }
 
