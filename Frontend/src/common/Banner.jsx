@@ -37,7 +37,7 @@ const Banner = () => {
   h-[200px] 
   sm:h-[260px] 
   md:h-[380px] 
-  lg:h-[590px]">
+  lg:h-[590px] mt-2 px-5">
 
       {banner.length > 0 && (
         <img

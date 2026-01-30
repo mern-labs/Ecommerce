@@ -1,22 +1,23 @@
-import React from "react"
-import { useNavigate } from "react-router-dom"
-import { useData } from "../context/Usecontext"
-import apiInstance from "../interceptor/interceptor"
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useData } from "../context/Usecontext";
+import apiInstance from "../interceptor/interceptor";
 
 const Category = () => {
-  const { products } = useData()
-  const navigate = useNavigate()
-  const baseURL = apiInstance.defaults.baseURL
-
-  const categories = [...new Set(products.map(item => item.category))]
+  const { products } = useData();
+  const navigate = useNavigate();
+  const baseURL = apiInstance.defaults.baseURL;
 
   if (!products || products.length === 0) {
     return (
       <p className="text-center mt-10 text-gray-500">
         No categories available
       </p>
-    )
+    );
   }
+
+  // Get unique categories
+  const categories = [...new Set(products.map(item => item.category))];
 
   return (
     <div className="px-6 py-14 bg-gray-50">
@@ -38,7 +39,7 @@ const Category = () => {
         {categories.map((category, index) => {
           const categoryImage = products.find(
             item => item.category === category
-          )?.image
+          )?.image;
 
           return (
             <div
@@ -68,11 +69,11 @@ const Category = () => {
                 </span>
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Category
+export default Category;

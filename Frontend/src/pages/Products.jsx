@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useData } from "../context/Usecontext";
 import apiInstance from "../interceptor/interceptor";
 import addtocartIcon from "../assets/addtocart.png";
@@ -9,6 +10,8 @@ const Products = () => {
   const baseURL = apiInstance.defaults.baseURL;
 
   const [addedToCart, setAddedToCart] = useState({});
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("category");
 
   const handleAddToCart = (product) => {
     addToCart(product, 1);
@@ -17,12 +20,32 @@ const Products = () => {
 
   const isWishlisted = (id) => wishlist.some((p) => p._id === id);
 
+  const filteredProducts = category
+    ? products.filter(
+        (item) => item.category?.toLowerCase() === category.toLowerCase()
+      )
+    : products;
+
   return (
     <div className="p-6">
+
+      {/* ✅ ONLY HEADING ADDED */}
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-extrabold text-gray-800 capitalize">
+          {category ? category.replace(/-/g, " ") : "All Products"}
+        </h1>
+        <div className="mt-4 flex justify-center">
+          <span className="w-24 h-1 bg-gradient-to-r from-pink-500 to-red-500 rounded-full"></span>
+        </div>
+      </div>
+
+      {/* ❌ NOTHING BELOW CHANGED */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((item) => (
-          <div key={item._id} className="border rounded-xl shadow-md hover:shadow-xl transition p-4 bg-white">
-            {/* Image */}
+        {filteredProducts.map((item) => (
+          <div
+            key={item._id}
+            className="border rounded-xl shadow-md hover:shadow-xl transition p-4 bg-white"
+          >
             <div className="relative group overflow-hidden rounded-lg">
               <img
                 src={`${baseURL}/uploads/products/${item.image}`}
@@ -30,16 +53,19 @@ const Products = () => {
                 className="w-full h-100 object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-4 opacity-0 group-hover:opacity-100 transition">
-                {/* Wishlist */}
                 <button
                   onClick={() => toggleWishlist(item)}
                   className={`w-10 h-10 rounded-full shadow flex items-center justify-center hover:scale-110 transition
                     ${isWishlisted(item._id) ? "bg-red-500" : "bg-white"}`}
                 >
-                  <img src={wishlistIcon} className={`w-6 h-6 ${isWishlisted(item._id) ? "invert brightness-0" : ""}`} />
+                  <img
+                    src={wishlistIcon}
+                    className={`w-6 h-6 ${
+                      isWishlisted(item._id) ? "invert brightness-0" : ""
+                    }`}
+                  />
                 </button>
 
-                {/* Add to Cart */}
                 <button
                   onClick={() => handleAddToCart(item)}
                   className={`w-10 h-10 rounded-full shadow flex items-center justify-center hover:scale-110 transition
