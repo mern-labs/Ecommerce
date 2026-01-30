@@ -10,6 +10,7 @@ import MainLayout from "./layouts/MainLayout"
 import Products from "./pages/Products"
 import Wishlist from "./pages/Wishlist"
 import Addtocard from "./pages/Addtocard"
+import ProductDetails from "./pages/ProductDetails";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/products" element={<Products />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/addtocard" element={<Addtocard />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
       </ProviderContext>
     </BrowserRouter>
