@@ -4,6 +4,7 @@ const dbConnected = require("./config/db");
 const bannerRoutes = require("./router/bannerRoute");
 const userRoutes = require("./router/userRoutes");
 const productRoute = require("./router/productRoute");
+const wishlistRouter = require("./router/wishlistRoute");
 require("dotenv").config()
 const app=express();
 app.use(express.json())
@@ -14,6 +15,8 @@ app.use("/uploads",express.static("uploads"))
 app.use("/api",bannerRoutes)
 app.use("/api", userRoutes)
 app.use("/api",productRoute)
+app.use("/api/wishlist",wishlistRouter)
+
 
 
 dbConnected()
