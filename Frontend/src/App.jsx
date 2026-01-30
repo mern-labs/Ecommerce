@@ -7,6 +7,7 @@ import Login from "./common/Login"
 import Register from "./common/Register"
 
 import MainLayout from "./layouts/MainLayout"
+import Products from "./pages/Products"
 
 const App = () => {
   return (
@@ -23,7 +24,7 @@ const App = () => {
           {/* Auth pages without Navbar */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
+          <Route path="/products" element={<Products />} />
         </Routes>
       </ProviderContext>
     </BrowserRouter>
