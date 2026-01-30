@@ -8,6 +8,8 @@ import Register from "./common/Register"
 
 import MainLayout from "./layouts/MainLayout"
 import Products from "./pages/Products"
+import Wishlist from "./pages/Wishlist"
+import Addtocard from "./pages/Addtocard"
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/addtocard" element={<Addtocard />} />
         </Routes>
       </ProviderContext>
     </BrowserRouter>

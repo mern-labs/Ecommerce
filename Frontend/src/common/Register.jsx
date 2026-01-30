@@ -85,7 +85,7 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-yellow-50 to-red-50 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-linear-to-br from-pink-50 via-yellow-50 to-red-50 flex items-center justify-center px-4 py-8">
       <div
         className={`bg-white shadow-2xl rounded-3xl w-full max-w-md p-8 transition-all duration-700 ${
           mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
@@ -97,7 +97,7 @@ const Register = () => {
         </div>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-pink-500 via-red-500 to-pink-600 bg-clip-text text-transparent">
+        <h2 className="text-3xl font-bold text-center mb-2 bg-linear-to-r from-pink-500 via-red-500 to-pink-600 bg-clip-text text-transparent">
           Create Account
         </h2>
         <p className="text-center text-gray-500 text-sm mb-8">
@@ -297,7 +297,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-pink-500 via-red-500 to-pink-600 hover:from-pink-600 hover:via-red-600 hover:to-pink-700 disabled:from-gray-300 disabled:to-gray-400 text-white py-3.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-[1.01] active:scale-[0.99]"
+            className="w-full bg-linear-to-r from-pink-500 via-red-500 to-pink-600 hover:from-pink-600 hover:via-red-600 hover:to-pink-700 disabled:from-gray-300 disabled:to-gray-400 text-white py-3.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-[1.01] active:scale-[0.99]"
           >
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
