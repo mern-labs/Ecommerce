@@ -35,7 +35,7 @@ const Products = () => {
           {category ? category.replace(/-/g, " ") : "All Products"}
         </h1>
         <div className="mt-4 flex justify-center">
-          <span className="w-24 h-1 bg-gradient-to-r from-pink-500 to-red-500 rounded-full"></span>
+          <span className="w-24 h-1 bg-linear-to-r from-pink-500 to-red-500 rounded-full"></span>
         </div>
       </div>
 

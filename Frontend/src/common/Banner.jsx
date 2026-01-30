@@ -34,10 +34,10 @@ const Banner = () => {
 
   return (
     <div className="w-full overflow-hidden 
-  h-[200px] 
-  sm:h-[260px] 
-  md:h-[380px] 
-  lg:h-[590px] mt-2 px-5">
+  h-50 
+  sm:h-65 
+  md:h-95 
+  lg:h-147.5 mt-2 px-5">
 
       {banner.length > 0 && (
         <img
