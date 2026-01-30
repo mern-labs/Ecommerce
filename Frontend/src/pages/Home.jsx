@@ -3,6 +3,7 @@ import Banner from '../common/Banner'
 import Navbar from '../common/Navbar'
 import Products from './Products'
 import Category from '../layouts/Category'
+import Footer from './Footer'
 
 const Home = () => {
   return (
@@ -10,6 +11,7 @@ const Home = () => {
       <Banner/>
       <Category/>
       <Products/>
+      <Footer/> 
     </div>
   )
 }
