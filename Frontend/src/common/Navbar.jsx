@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import logo from "../assets/saree logo.jpg";
+import rotatingLogo from "../assets/saree logo.jpg"; // Top rotating logo
+import cornerLogo from "../assets/Logo_Fonts.png";   // Left corner logo
 import Button from "./Button";
 import { Link, useNavigate } from "react-router-dom";
 import { useData } from "../context/Usecontext";
@@ -42,18 +43,14 @@ const Navbar = () => {
 
   return (
     <header className="w-full sticky top-0 z-50 bg-white shadow-md border-b border-gray-100">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <nav className="max-w-2l mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col items-center relative">
 
-        {/* Logo */}
-        <div
-          className={`flex justify-center mb-4 transition-all duration-700 ${
-            mounted ? "opacity-100 scale-100" : "opacity-0 scale-95"
-          }`}
-        >
+        {/* Top Rotating Logo */}
+        <div className="w-full flex justify-center mb-3">
           <Link to="/home">
             <img
-              src={logo}
-              alt="Saree Logo"
+              src={rotatingLogo}
+              alt="Rotating Logo"
               className="h-16 sm:h-18 md:h-20 object-contain cursor-pointer"
               style={{
                 transform: flip ? "rotateY(180deg)" : "rotateY(0deg)",
@@ -63,32 +60,33 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Menu + Search + Actions */}
-        <div
-          className={`flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6 transition-all duration-700 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-          }`}
-        >
+        {/* Navbar Content - Evenly Spaced */}
+        <div className="w-full flex items-center justify-between">
 
-          {/* Menu */}
-          <ul className="flex flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8">
+          {/* Left: Corner Logo */}
+          <Link to="/home" className="flex items-center">
+            <img
+              src={cornerLogo}
+              alt="Logo"
+              className="h-12 w-auto object-contain cursor-pointer"
+            />
+          </Link>
+
+          {/* Center: Menu */}
+          <ul className="flex flex-wrap justify-center gap-6 lg:gap-8 flex-1 mx-8">
             {menuItems.map((item, i) => (
               <li key={i}>
                 <Link
                   to={item.path}
                   onClick={() => setActiveMenu(item.name)}
                   className={`relative font-semibold uppercase tracking-wide text-sm transition-all duration-300 hover:text-pink-500 group ${
-                    activeMenu === item.name
-                      ? "text-pink-500"
-                      : "text-gray-700"
+                    activeMenu === item.name ? "text-pink-500" : "text-gray-700"
                   }`}
                 >
                   {item.name}
                   <span
                     className={`absolute -bottom-1 left-0 h-0.5 bg-linear-to-r from-pink-500 to-red-500 transition-all duration-300 ${
-                      activeMenu === item.name
-                        ? "w-full"
-                        : "w-0 group-hover:w-full"
+                      activeMenu === item.name ? "w-full" : "w-0 group-hover:w-full"
                     }`}
                   ></span>
                 </Link>
@@ -96,28 +94,29 @@ const Navbar = () => {
             ))}
           </ul>
 
-          {/* Search Bar */}
-          <form
-            onSubmit={handleSearch}
-            className="flex items-center w-full max-w-md bg-gray-50 border border-gray-200 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-pink-400 transition-all"
-          >
-            <input
-              type="text"
-              placeholder="Search sarees, categories..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
-            />
-            <button
-              type="submit"
-              className="ml-3 bg-gradient-to-r from-pink-500 to-red-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:from-pink-600 hover:to-red-600 transition-all"
-            >
-              Search
-            </button>
-          </form>
+          {/* Right: Search + Actions */}
+          <div className="flex items-center gap-4 lg:gap-6">
 
-          {/* Actions */}
-          <div className="flex gap-3 sm:gap-4 items-center">
+            {/* Search Bar */}
+            <form
+              onSubmit={handleSearch}
+              className="flex items-center bg-gray-50 border border-gray-200 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-pink-400 transition-all"
+            >
+              <input
+                type="text"
+                placeholder="Search sarees, categories..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
+              />
+              <button
+                type="submit"
+                className="ml-3 bg-gradient-to-r from-pink-500 to-red-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:from-pink-600 hover:to-red-600 transition-all"
+              >
+                Search
+              </button>
+            </form>
+
             {!user ? (
               <Link to="/login">
                 <Button
@@ -131,16 +130,10 @@ const Navbar = () => {
                 <Link to="/wishlist" className="relative">
                   <div
                     className={`p-2 rounded-full transition-all ${
-                      wishlist.length > 0
-                        ? "bg-pink-100 animate-pulse"
-                        : "hover:bg-pink-50"
+                      wishlist.length > 0 ? "bg-pink-100 animate-pulse" : "hover:bg-pink-50"
                     }`}
                   >
-                    <img
-                      src={wishlistIcon}
-                      alt="Wishlist"
-                      className="w-7 h-7"
-                    />
+                    <img src={wishlistIcon} alt="Wishlist" className="w-7 h-7" />
                     {wishlist.length > 0 && (
                       <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                         {wishlist.length}
@@ -153,16 +146,10 @@ const Navbar = () => {
                 <Link to="/addtocard" className="relative">
                   <div
                     className={`p-2 rounded-full transition-all ${
-                      cart.length > 0
-                        ? "bg-green-100 animate-pulse"
-                        : "hover:bg-green-50"
+                      cart.length > 0 ? "bg-green-100 animate-pulse" : "hover:bg-green-50"
                     }`}
                   >
-                    <img
-                      src={addtocartIcon}
-                      alt="Cart"
-                      className="w-7 h-7"
-                    />
+                    <img src={addtocartIcon} alt="Cart" className="w-7 h-7" />
                     {cart.length > 0 && (
                       <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                         {cart.length}
@@ -180,31 +167,11 @@ const Navbar = () => {
                     <span className="hidden sm:block font-semibold text-gray-700 max-w-25 truncate">
                       {user.name}
                     </span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                      stroke="currentColor"
-                      className="w-4 h-4 text-gray-500 transition-transform duration-300 group-hover:rotate-180"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
                   </div>
-
-                  {/* Dropdown */}
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-95 group-hover:scale-100 overflow-hidden">
                     <div className="p-3 border-b border-gray-100">
-                      <p className="text-sm font-semibold text-gray-700">
-                        {user.name}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">
-                        {user.email}
-                      </p>
+                      <p className="text-sm font-semibold text-gray-700">{user.name}</p>
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
                     </div>
                     <Link
                       to="/orders"
