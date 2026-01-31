@@ -65,7 +65,7 @@ const Navbar = () => {
 
   return (
     <header className="w-full sticky top-0 z-50 bg-white shadow-md border-b border-gray-100">
-      <nav className="max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-6 xl:px-8 2xl:px-12 py-2 lg:py-2.5 xl:py-3">
+      <nav className="max-w-480 mx-auto px-3 sm:px-4 md:px-6 lg:px-6 xl:px-8 2xl:px-12 py-2 lg:py-2.5 xl:py-3">
         
         {/* Top Rotating Logo - Visible on all screens */}
         <div className="w-full flex justify-center mb-2 lg:mb-2.5 xl:mb-3">
@@ -86,7 +86,7 @@ const Navbar = () => {
         <div className="w-full flex items-center justify-between gap-2 lg:gap-3 xl:gap-4">
           
           {/* Left: Corner Logo */}
-          <Link to="/home" className="flex items-center flex-shrink-0">
+          <Link to="/home" className="flex items-center shrink-0">
             <img
               src={cornerLogo}
               alt="Logo"
@@ -107,7 +107,7 @@ const Navbar = () => {
                 >
                   {item.name}
                   <span
-                    className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-pink-500 to-red-500 transition-all duration-300 ${
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-linear-to-r from-pink-500 to-red-500 transition-all duration-300 ${
                       activeMenu === item.name ? "w-full" : "w-0 group-hover:w-full"
                     }`}
                   ></span>
@@ -133,7 +133,7 @@ const Navbar = () => {
               />
               <button
                 type="submit"
-                className="ml-1.5 xl:ml-2 bg-gradient-to-r from-pink-500 to-red-500 text-white px-2 xl:px-2.5 2xl:px-3 py-0.5 xl:py-1 rounded-full text-[10px] xl:text-xs 2xl:text-sm font-semibold hover:from-pink-600 hover:to-red-600 transition-all whitespace-nowrap"
+                className="ml-1.5 xl:ml-2 bg-linear-to-r from-pink-500 to-red-500 text-white px-2 xl:px-2.5 2xl:px-3 py-0.5 xl:py-1 rounded-full text-[10px] xl:text-xs 2xl:text-sm font-semibold hover:from-pink-600 hover:to-red-600 transition-all whitespace-nowrap"
               >
                 Search
               </button>
@@ -195,10 +195,10 @@ const Navbar = () => {
                 {/* Profile Dropdown - Desktop */}
                 <div className="hidden lg:block relative group">
                   <div className="flex items-center gap-1 xl:gap-1.5 2xl:gap-2 cursor-pointer px-1.5 xl:px-2 2xl:px-3 py-1 xl:py-1.5 2xl:py-2 rounded-full hover:bg-gray-50 transition-all duration-300">
-                    <div className="w-6 h-6 xl:w-7 xl:h-7 2xl:w-8 2xl:h-8 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-semibold shadow-md text-[10px] xl:text-xs 2xl:text-sm">
+                    <div className="w-6 h-6 xl:w-7 xl:h-7 2xl:w-8 2xl:h-8 rounded-full bg-linear-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-semibold shadow-md text-[10px] xl:text-xs 2xl:text-sm">
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
-                    <span className="font-semibold text-gray-700 max-w-[60px] xl:max-w-[80px] 2xl:max-w-32 truncate text-[11px] xl:text-xs 2xl:text-sm">
+                    <span className="font-semibold text-gray-700 max-w-15 xl:max-w-20 2xl:max-w-32 truncate text-[11px] xl:text-xs 2xl:text-sm">
                       {user.name}
                     </span>
                   </div>
@@ -260,7 +260,7 @@ const Navbar = () => {
               />
               <button
                 type="submit"
-                className="ml-3 bg-gradient-to-r from-pink-500 to-red-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:from-pink-600 hover:to-red-600 transition-all"
+                className="ml-3 bg-linear-to-r from-pink-500 to-red-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:from-pink-600 hover:to-red-600 transition-all"
               >
                 Search
               </button>
@@ -294,9 +294,9 @@ const Navbar = () => {
             {user ? (
               <div className="border-t border-gray-200 bg-white">
                 {/* User Info */}
-                <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-pink-50 to-red-50">
+                <div className="px-4 py-3 border-b border-gray-200 bg-linear-to-r from-pink-50 to-red-50">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-bold shadow-md">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-bold shadow-md">
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">

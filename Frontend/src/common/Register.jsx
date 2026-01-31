@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import logo from "../assets/saree logo.jpg"
+import logo from "../assets/Logo.png"
 import { register } from "../interceptor/interceptor"
 
 const Register = () => {
@@ -85,26 +85,32 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-pink-50 via-yellow-50 to-red-50 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-yellow-50 to-red-50 flex items-center justify-center px-4 py-8">
+      {/* Main Card */}
       <div
         className={`bg-white shadow-2xl rounded-3xl w-full max-w-md p-8 transition-all duration-700 ${
           mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
         {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <img src={logo} alt="Saree Logo" className="h-20 w-auto object-contain" />
+        <div className="flex justify-center mb-1">
+          <img
+            src={logo}
+            alt="Saree Logo"
+            className="h-28 sm:h-32 md:h-36 lg:h-40 w-auto object-contain"
+          />
         </div>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold text-center mb-2 bg-linear-to-r from-pink-500 via-red-500 to-pink-600 bg-clip-text text-transparent">
+        <h2 className="text-3xl font-bold text-center mb-1 bg-gradient-to-r from-pink-500 via-red-500 to-pink-600 bg-clip-text text-transparent">
           Create Account
         </h2>
-        <p className="text-center text-gray-500 text-sm mb-8">
+        <p className="text-center text-gray-500 text-sm mb-5">
           Join us and explore beautiful sarees
         </p>
 
-        <form className="space-y-5" onSubmit={handleRegister}>
+        {/* Form */}
+        <form className="space-y-4" onSubmit={handleRegister}>
           {/* Name Field */}
           <div>
             <div className="relative">
@@ -297,7 +303,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-linear-to-r from-pink-500 via-red-500 to-pink-600 hover:from-pink-600 hover:via-red-600 hover:to-pink-700 disabled:from-gray-300 disabled:to-gray-400 text-white py-3.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-[1.01] active:scale-[0.99]"
+            className="w-full bg-gradient-to-r from-pink-500 via-red-500 to-pink-600 hover:from-pink-600 hover:via-red-600 hover:to-pink-700 disabled:from-gray-300 disabled:to-gray-400 text-white py-3.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-[1.01] active:scale-[0.99]"
           >
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
@@ -365,7 +371,7 @@ const Register = () => {
         </form>
 
         {/* Footer */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
+        <div className="mt-6 pt-6 border-t border-gray-200">
           <p className="text-center text-sm text-gray-600">
             Already have an account?{" "}
             <Link

@@ -83,7 +83,7 @@ const FilterProducts = () => {
 
   /* ---------------- Filter UI ---------------- */
   const FilterUI = (
-    <div className="bg-gradient-to-b from-white to-gray-50 h-full flex flex-col">
+    <div className="bg-linear-to-b from-white to-gray-50 h-full flex flex-col">
       <div
         className="p-6 overflow-y-auto space-y-6
         [&::-webkit-scrollbar]:w-2
