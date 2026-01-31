@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import logo from "../assets/saree logo.jpg"
-import { login as loginAPI } from "../interceptor/interceptor"
+import { getWishlist, login as loginAPI } from "../interceptor/interceptor"
 import { useData } from "../context/Usecontext"
 
 const Login = () => {
@@ -47,15 +47,13 @@ const Login = () => {
 
     try {
       const res = await loginAPI({ email, password })
-      localStorage.setItem("token", res.data.data.token)
-
       if (rememberMe) {
         localStorage.setItem("rememberedEmail", email)
       } else {
         localStorage.removeItem("rememberedEmail")
       }
 
-      login({ ...res.data.data })
+      await login({ ...res.data.data })
       navigate("/home")
     } catch (error) {
       setErrors({
@@ -76,7 +74,7 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-yellow-50 to-red-50 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-linear-to-br from-pink-50 via-yellow-50 to-red-50 flex items-center justify-center px-4 py-8">
       {/* Main Card */}
       <div
         className={`bg-white shadow-2xl rounded-3xl w-full max-w-md p-8 transition-all duration-700 ${
@@ -93,7 +91,7 @@ const Login = () => {
         </div>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-pink-500 via-red-500 to-pink-600 bg-clip-text text-transparent">
+        <h2 className="text-3xl font-bold text-center mb-2 bg-linear-to-r from-pink-500 via-red-500 to-pink-600 bg-clip-text text-transparent">
           Welcome Back
         </h2>
         <p className="text-center text-gray-500 text-sm mb-8">
@@ -261,7 +259,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-pink-500 via-red-500 to-pink-600 hover:from-pink-600 hover:via-red-600 hover:to-pink-700 disabled:from-gray-300 disabled:to-gray-400 text-white py-3.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-[1.01] active:scale-[0.99]"
+            className="w-full bg-linear-to-r from-pink-500 via-red-500 to-pink-600 hover:from-pink-600 hover:via-red-600 hover:to-pink-700 disabled:from-gray-300 disabled:to-gray-400 text-white py-3.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-[1.01] active:scale-[0.99]"
           >
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
