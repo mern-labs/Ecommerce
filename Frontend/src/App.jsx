@@ -11,6 +11,8 @@ import Products from "./pages/Products"
 import Wishlist from "./pages/Wishlist"
 import Addtocard from "./pages/Addtocard"
 import ProductDetails from "./pages/ProductDetails";
+import About from "./pages/About"
+import AboutSection from "./pages/About"
 
 const App = () => {
   return (
@@ -22,6 +24,7 @@ const App = () => {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/about" element={<AboutSection />} />
           </Route>
 
           {/* Auth pages without Navbar */}

@@ -4,6 +4,7 @@ import Navbar from '../common/Navbar'
 import Products from './Products'
 import Category from '../layouts/Category'
 import Footer from './Footer'
+import AboutSection from './AboutSection'
 
 const Home = () => {
   return (
@@ -11,6 +12,7 @@ const Home = () => {
       <Banner/>
       <Category/>
       <Products/>
+      <AboutSection/>
       <Footer/> 
     </div>
   )
