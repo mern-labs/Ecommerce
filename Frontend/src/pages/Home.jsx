@@ -4,6 +4,7 @@ import Navbar from '../common/Navbar'
 import Products from './Products'
 import Category from '../layouts/Category'
 import Footer from './Footer'
+import Checkout from './Checkout'
 
 const Home = () => {
   return (
