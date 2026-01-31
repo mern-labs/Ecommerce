@@ -6,7 +6,7 @@ const wishlistRouter=express.Router()
 
 wishlistRouter.post("/add",verifyToken,createWishList)
 wishlistRouter.post("/remove",verifyToken,removeFromWishlist)
-wishlistRouter.post("/",verifyToken,getWishlist)
+wishlistRouter.get("/",verifyToken,getWishlist)
 
 
 
