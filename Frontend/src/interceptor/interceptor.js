@@ -53,6 +53,18 @@ export const getProducts = async () => {
   return res;
 };
 
+
+// Get product by ID
+export const getProductById = async (id) => {
+  try {
+    const res = await apiInstance.get(`/api/products/${id}`);
+    return res.data; // will contain { success: true, product: {...} }
+  } catch (err) {
+    console.error("Get product by ID error:", err.message);
+    throw err;
+  }
+};
+
 // ---------------------- Wishlist ----------------------
 export const getWishlist = async () => {
   const res = await apiInstance.get("/api/wishlist");

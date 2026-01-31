@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import {
   getProducts,
   getWishlist,
@@ -9,6 +9,7 @@ import {
   removeFromCart as removeFromCartAPI,
   updateAddToCart as updateCartAPI,
   clearAddToCart as clearCartAPI,
+  getProductById as getProductByIdAPI, // ✅ fetch by ID
 } from "../interceptor/interceptor";
 
 const DataContext = createContext(null);
@@ -18,6 +19,7 @@ export function ProviderContext({ children }) {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [currentProduct, setCurrentProduct] = useState(null);
 
   // ---------------- Load from localStorage ----------------
   useEffect(() => {
@@ -45,11 +47,11 @@ export function ProviderContext({ children }) {
 
   // ---------------- Fetch Wishlist ----------------
   useEffect(() => {
+    if (!user) return;
+
     const fetchWishlist = async () => {
-      if (!user) return;
       try {
         const res = await getWishlist();
-        // FIXED: read the correct field
         const wishlistData = res.data?.wishlist || res.data?.products || [];
         setWishlist(wishlistData);
         localStorage.setItem("wishlist", JSON.stringify(wishlistData));
@@ -64,9 +66,9 @@ export function ProviderContext({ children }) {
 
   // ---------------- Fetch Cart ----------------
   useEffect(() => {
-    const fetchCart = async () => {
-      if (!user) return;
+    if (!user) return;
 
+    const fetchCart = async () => {
       try {
         const res = await getAddToCart();
         const cartData =
@@ -90,45 +92,14 @@ export function ProviderContext({ children }) {
     localStorage.setItem("user", JSON.stringify(data));
     localStorage.setItem("token", data.token);
     setUser(data);
-
-    // fetch wishlist
-    try {
-      const wishRes = await getWishlist();
-      const wishlistData = wishRes.data?.wishlist || wishRes.data?.products || [];
-      setWishlist(wishlistData);
-      localStorage.setItem("wishlist", JSON.stringify(wishlistData));
-    } catch (err) {
-      console.log("Wishlist fetch error:", err.message);
-      setWishlist([]);
-      localStorage.removeItem("wishlist");
-    }
-
-    // fetch cart
-    try {
-      const cartRes = await getAddToCart();
-      const cartData =
-        cartRes.products?.map((item) => ({
-          ...item.product,
-          quantity: item.quantity,
-        })) || [];
-      setCart(cartData);
-      localStorage.setItem("cart", JSON.stringify(cartData));
-    } catch (err) {
-      console.log("Cart fetch error:", err.message);
-      setCart([]);
-      localStorage.removeItem("cart");
-    }
   };
 
   const logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("cart");
-    localStorage.removeItem("wishlist");
-
+    localStorage.clear();
     setUser(null);
     setCart([]);
     setWishlist([]);
+    setCurrentProduct(null);
   };
 
   // ---------------- CART ACTIONS ----------------
@@ -219,6 +190,19 @@ export function ProviderContext({ children }) {
       : addToWishlistHandler(product);
   };
 
+  // ---------------- FETCH PRODUCT BY ID ----------------
+  const fetchProductById = useCallback(async (id) => {
+    try {
+      const res = await getProductByIdAPI(id);
+      setCurrentProduct(res.product || null);
+      return res.product;
+    } catch (err) {
+      console.log("Fetch product by ID error:", err.message);
+      setCurrentProduct(null);
+      return null;
+    }
+  }, []);
+
   return (
     <DataContext.Provider
       value={{
@@ -226,6 +210,8 @@ export function ProviderContext({ children }) {
         products,
         cart,
         wishlist,
+        currentProduct,
+        fetchProductById,
         login,
         logout,
         addToCart,
