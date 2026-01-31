@@ -43,7 +43,7 @@ const Navbar = () => {
 
   return (
     <header className="w-full sticky top-0 z-50 bg-white shadow-md border-b border-gray-100">
-      <nav className="max-w-2l mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col items-center relative">
+      <nav className="lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col items-center relative">
 
         {/* Top Rotating Logo */}
         <div className="w-full flex justify-center mb-3">
