@@ -12,6 +12,8 @@ import Wishlist from "./pages/Wishlist"
 import Addtocard from "./pages/Addtocard"
 import ProductDetails from "./pages/ProductDetails";
 import FilterProducts from "./pages/FilterProducts"
+import Category from "./layouts/Category"
+import Checkout from "./pages/Checkout"
 
 const App = () => {
   return (
@@ -25,14 +27,16 @@ const App = () => {
             <Route path="/home" element={<Home />} />
             <Route path="/products/filter" element={<FilterProducts />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/shop" element={<Category />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/addtocard" element={<Addtocard />} />
+            <Route path="/checkout" element={<Checkout />} />
           </Route>
 
           {/* Auth pages without Navbar */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/addtocard" element={<Addtocard />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
       </ProviderContext>
     </BrowserRouter>

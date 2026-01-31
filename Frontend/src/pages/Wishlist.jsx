@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useData } from "../context/Usecontext";
 import apiInstance, { removeWishlist } from "../interceptor/interceptor";
 
 const Wishlist = () => {
-  const { wishlist, removeFromWishlist} = useData();
+  const { wishlist, removeFromWishlist } = useData();
   const baseURL = apiInstance.defaults.baseURL;
+  const navigate = useNavigate();
 
   const [removingId, setRemovingId] = useState(null);
 
@@ -21,7 +23,7 @@ const Wishlist = () => {
       setRemovingId(productId);
 
       // backend remove
-      await removeWishlist(productId)
+      await removeWishlist(productId);
 
       // frontend update
       removeFromWishlist(productId);
@@ -33,8 +35,12 @@ const Wishlist = () => {
     }
   };
 
+  const goToDetails = (id) => {
+    navigate(`/product/${id}`);
+  };
+
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold text-center mb-8">
         ❤️ My Wishlist
       </h1>
@@ -43,34 +49,45 @@ const Wishlist = () => {
         {wishlist.map((item) => (
           <div
             key={item._id}
-            className="border rounded-xl shadow hover:shadow-lg transition bg-white"
+            className="border rounded-xl shadow hover:shadow-xl transition bg-white overflow-hidden group"
           >
-            <img
-              src={
-                item.image
-                  ? `${baseURL}/uploads/products/${item.image}`
-                  : "https://via.placeholder.com/300x300?text=No+Image"
-              }
-              alt={item.name}
-              className="w-full h-80 object-cover rounded-t-xl"
-            />
+            {/* Clickable Image */}
+            <div
+              className="overflow-hidden cursor-pointer"
+              onClick={() => goToDetails(item._id)}
+            >
+              <img
+                src={
+                  item.image
+                    ? `${baseURL}/uploads/products/${item.image}`
+                    : "https://via.placeholder.com/300x300?text=No+Image"
+                }
+                alt={item.name}
+                className="w-full h-80 object-cover group-hover:scale-105 transition"
+              />
+            </div>
 
             <div className="p-4 text-center">
-              <h2 className="font-semibold">{item.name}</h2>
+              {/* Clickable Name */}
+              <h2
+                onClick={() => goToDetails(item._id)}
+                className="font-semibold cursor-pointer hover:underline"
+              >
+                {item.name}
+              </h2>
+
               <p className="text-gray-600">₹{item.price}</p>
 
               <button
                 onClick={() => handleRemove(item._id)}
                 disabled={removingId === item._id}
-                className={`mt-3 px-4 py-2 rounded-lg text-white transition ${
+                className={`mt-3 px-4 py-2 rounded-lg text-white w-full transition ${
                   removingId === item._id
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-red-500 hover:bg-red-600"
                 }`}
               >
-                {removingId === item._id
-                  ? "Removing..."
-                  : "Remove"}
+                {removingId === item._id ? "Removing..." : "Remove"}
               </button>
             </div>
           </div>
