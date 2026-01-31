@@ -6,6 +6,7 @@ const userRoutes = require("./router/userRoutes");
 const productRoute = require("./router/productRoute");
 const wishlistRouter = require("./router/wishlistRoute");
 const addtocartRouter = require("./router/addtocartRoute");
+const orderRouter = require("./router/ordersRoute");
 require("dotenv").config()
 const app=express();
 app.use(express.json())
@@ -18,6 +19,7 @@ app.use("/api", userRoutes)
 app.use("/api",productRoute)
 app.use("/api/wishlist",wishlistRouter)
 app.use("/api/addtocart",addtocartRouter)
+app.use("/api/order",orderRouter)
 
 
 
