@@ -11,10 +11,8 @@ import Products from "./pages/Products";
 import Wishlist from "./pages/Wishlist";
 import Addtocard from "./pages/Addtocard";
 import ProductDetails from "./pages/ProductDetails";
-<<<<<<< HEAD
-import About from "./pages/About"
-import AboutSection from "./pages/About"
-=======
+import About from "./pages/About";
+
 import FilterProducts from "./pages/FilterProducts";
 import Category from "./layouts/Category";
 import Checkout from "./pages/Checkout";
@@ -26,7 +24,6 @@ import AdminProducts from "./pages/Admin/AdminProducts";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import AdminSettings from "./pages/Admin/AdminSettings";
 import AddProduct from "./pages/AddProduct";
->>>>>>> 9384b0bbe7ba30868f09db9702b67c6ab06fe129
 
 const App = () => {
   return (
@@ -38,9 +35,8 @@ const App = () => {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
-<<<<<<< HEAD
-            <Route path="/about" element={<AboutSection />} />
-=======
+            <Route path="/about" element={<About />} />
+
             <Route path="/products" element={<Products />} />
             <Route path="/products/filter" element={<FilterProducts />} />
             <Route path="/product/:id" element={<ProductDetails />} />
@@ -48,7 +44,6 @@ const App = () => {
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/addtocard" element={<Addtocard />} />
             <Route path="/checkout" element={<Checkout />} />
->>>>>>> 9384b0bbe7ba30868f09db9702b67c6ab06fe129
           </Route>
 
           {/* Auth pages */}

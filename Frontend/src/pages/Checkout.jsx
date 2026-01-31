@@ -166,7 +166,7 @@ const Checkout = () => {
           <button
             onClick={placeOrder}
             className="mt-6 w-full py-4 rounded-2xl text-lg font-bold text-white 
-                       bg-gradient-to-r from-pink-500 to-red-500
+                       bg-linear-to-r from-pink-500 to-red-500
                        transform transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl"
           >
             Place Order

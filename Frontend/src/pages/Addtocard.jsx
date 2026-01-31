@@ -156,7 +156,7 @@ const Addtocard = () => {
           <button
             onClick={handleBuyNow}
             className="mt-6 w-full py-4 rounded-2xl text-lg font-bold text-white 
-                       bg-gradient-to-r from-black to-gray-800
+                       bg-linear-to-r from-black to-gray-800
                        hover:scale-105 active:scale-95 transition shadow-lg"
           >
             Secure Checkout
