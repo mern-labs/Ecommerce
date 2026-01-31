@@ -1,56 +1,121 @@
-import axios from "axios"
+import axios from "axios";
 
-const apiInstance=axios.create({
-  baseURL: "http://localhost:3000"
-})
+const apiInstance = axios.create({
+  baseURL: "http://localhost:3000",
+});
 
+// ✅ Request interceptor to attach token
 apiInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token") // get token from localStorage
+    const token = localStorage.getItem("token");
     if (token) {
-      config.headers.Authorization = `Bearer ${token}` // attach token
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
+    return config;
   },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
+  (error) => Promise.reject(error)
+);
 
-// ✅ Optional: Response interceptor for error handling
+// ✅ Response interceptor for unauthorized handling
 apiInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Unauthorized → token invalid/expired
-      localStorage.removeItem("token")
-      localStorage.removeItem("user")
-      window.location.href = "/login" // redirect to login
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login"; // redirect to login
     }
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
-export const getBanner=async()=>{
-  const res=await apiInstance.get("/api/banners")
+// ---------------------- Banner ----------------------
+export const getBanner = async () => {
+  const res = await apiInstance.get("/api/banners");
   console.log(res.data);
-  return res
-}
+  return res;
+};
 
-export const register=async({name,email,password})=>{
-  const res=await apiInstance.post("/api/register",{name,email,password})
-  return res
-}
+// ---------------------- Auth ----------------------
+export const register = async ({ name, email, password }) => {
+  const res = await apiInstance.post("/api/register", { name, email, password });
+  return res;
+};
 
-export const login=async({email,password})=>{
-  const res=await apiInstance.post("/api/login",{email,password})
-  return res
-}
+export const login = async ({ email, password }) => {
+  const res = await apiInstance.post("/api/login", { email, password });
+  return res;
+};
 
-export const getProducts=async()=>{
-  const res=await apiInstance.get("/api/products")
-  return res
-}
+// ---------------------- Products ----------------------
+export const getProducts = async () => {
+  const res = await apiInstance.get("/api/products");
+  return res;
+};
+
+// ---------------------- Wishlist ----------------------
+export const getWishlist = async () => {
+  const res = await apiInstance.get("/api/wishlist");
+  console.log("Wishlist",res);
+  return res;
+};
+
+// Add product to wishlist
+export const addWishlist = async (productId) => {
+  const res = await apiInstance.post("/api/wishlist/add", { productId });
+  return res;
+};
+
+// Remove product from wishlist
+export const removeWishlist = async (productId) => {
+  const res = await apiInstance.post("/api/wishlist/remove", { productId });
+  return res;
+};
 
 
-export default apiInstance
+// ✅ Add to cart
+export const addToCart = async (productId, quantity = 1) => {
+  const res = await apiInstance.post(
+    "/api/addtocart/add",
+    { productId, quantity }
+  );
+  return res.data;
+};
+
+
+// ✅ Get cart
+export const getAddToCart = async () => {
+  const res = await apiInstance.get("/api/addtocart");
+  return res.data;
+};
+
+
+// ✅ Remove from cart
+export const removeFromCart = async (productId) => {
+  const res = await apiInstance.post(
+    "/api/addtocart/remove",
+    { productId }
+  );
+  return res.data;
+};
+
+
+// ✅ Update quantity
+export const updateAddToCart = async (productId, quantity) => {
+  const res = await apiInstance.put(
+    "/api/addtocart/update",
+    { productId, quantity }
+  );
+  return res.data;
+};
+
+
+// ✅ Clear cart
+export const clearAddToCart = async () => {
+  const res = await apiInstance.delete("/api/addtocart/clear");
+  return res.data;
+};
+
+
+// ---------------------- Export axios instance ----------------------
+export default apiInstance;

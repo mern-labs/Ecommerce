@@ -3,19 +3,28 @@ import { useData } from "../context/Usecontext";
 import apiInstance from "../interceptor/interceptor";
 
 const Addtocard = () => {
-  const { cart, addToCart, removeFromCart } = useData();
+  const { cart, addToCart, removeFromCart, updateCartQuantity } = useData();
   const baseURL = apiInstance.defaults.baseURL;
 
+  // Increment product quantity
   const handleIncrement = (product) => {
-    addToCart(product, product.quantity + 1);
+    // Update quantity in backend/cart context
+    updateCartQuantity(product._id, product.quantity + 1);
   };
 
+  // Decrement product quantity
   const handleDecrement = (product) => {
-    if (product.quantity > 1) addToCart(product, product.quantity - 1);
+    if (product.quantity > 1) {
+      updateCartQuantity(product._id, product.quantity - 1);
+    }
   };
 
   if (!cart || cart.length === 0) {
-    return <p className="text-center mt-10 text-gray-500">🛒 Your cart is empty</p>;
+    return (
+      <p className="text-center mt-10 text-gray-500">
+        🛒 Your cart is empty
+      </p>
+    );
   }
 
   return (
