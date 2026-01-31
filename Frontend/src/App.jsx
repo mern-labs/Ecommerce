@@ -11,6 +11,7 @@ import Products from "./pages/Products"
 import Wishlist from "./pages/Wishlist"
 import Addtocard from "./pages/Addtocard"
 import ProductDetails from "./pages/ProductDetails";
+import FilterProducts from "./pages/FilterProducts"
 
 const App = () => {
   return (
@@ -22,12 +23,13 @@ const App = () => {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/products/filter" element={<FilterProducts />} />
+            <Route path="/products" element={<Products />} />
           </Route>
 
           {/* Auth pages without Navbar */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/products" element={<Products />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/addtocard" element={<Addtocard />} />
           <Route path="/product/:id" element={<ProductDetails />} />
