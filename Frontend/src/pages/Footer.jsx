@@ -17,7 +17,7 @@ const Footer = () => {
   }
 
   return (
-    <footer className="relative bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 overflow-hidden">
+    <footer className="relative bg-linear-to-br from-slate-950 via-purple-950 to-slate-950 overflow-hidden">
       {/* Animated Background Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-float"></div>
@@ -36,7 +36,7 @@ const Footer = () => {
             {/* Logo */}
             <Link to="/home" className="inline-block group">
               <div className="relative w-fit">
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl blur-lg opacity-50 group-hover:opacity-100 transition-all duration-300"></div>
+                <div className="absolute inset-0 bg-linear-to-r from-pink-500 to-purple-600 rounded-xl blur-lg opacity-50 group-hover:opacity-100 transition-all duration-300"></div>
                 <img
                   src={logo}
                   alt="Kalamandir Logo"
@@ -47,9 +47,9 @@ const Footer = () => {
             
             {/* Phone */}
             <div className="flex items-start gap-4 group">
-              <div className="relative flex-shrink-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl blur-md group-hover:blur-lg transition-all animate-pulse"></div>
-                <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl">
+              <div className="relative shrink-0">
+                <div className="absolute inset-0 bg-linear-to-br from-pink-500 to-rose-600 rounded-2xl blur-md group-hover:blur-lg transition-all animate-pulse"></div>
+                <div className="relative w-14 h-14 rounded-2xl bg-linear-to-br from-pink-500 to-rose-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-7 h-7 text-white">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
                   </svg>
@@ -110,8 +110,8 @@ const Footer = () => {
                   aria-label={social.name}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${social.gradient} rounded-2xl blur opacity-0 group-hover/social:opacity-75 transition-all duration-300`}></div>
-                  <div className={`relative w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br ${social.gradient} text-white hover:scale-110 transition-all duration-300 shadow-xl animate-float`}>
+                  <div className={`absolute inset-0 bg-linear-to-br ${social.gradient} rounded-2xl blur opacity-0 group-hover/social:opacity-75 transition-all duration-300`}></div>
+                  <div className={`relative w-12 h-12 flex items-center justify-center rounded-2xl bg-linear-to-br ${social.gradient} text-white hover:scale-110 transition-all duration-300 shadow-xl animate-float`}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
                       {social.icon}
                     </svg>
@@ -142,8 +142,8 @@ const Footer = () => {
             <div key={sectionIndex} className="lg:col-span-2" style={{ animationDelay: `${sectionIndex * 100}ms` }}>
               <h3 className="relative inline-block font-bold text-white text-lg lg:text-xl mb-6 group">
                 <span className="relative z-10">{section.title}</span>
-                <div className={`absolute -bottom-2 left-0 h-1 w-12 bg-gradient-to-r ${section.gradient} rounded-full group-hover:w-full transition-all duration-500`}></div>
-                <div className={`absolute -bottom-2 left-0 h-1 w-12 bg-gradient-to-r ${section.gradient} rounded-full blur-sm group-hover:w-full transition-all duration-500`}></div>
+                <div className={`absolute -bottom-2 left-0 h-1 w-12 bg-linear-to-r ${section.gradient} rounded-full group-hover:w-full transition-all duration-500`}></div>
+                <div className={`absolute -bottom-2 left-0 h-1 w-12 bg-linear-to-r ${section.gradient} rounded-full blur-sm group-hover:w-full transition-all duration-500`}></div>
               </h3>
               <ul className="space-y-3.5">
                 {section.links.map((item, index) => (
@@ -152,7 +152,7 @@ const Footer = () => {
                       to={`/${item.toLowerCase().replace(/ & | /g, '-')}`} 
                       className="flex items-center gap-2.5 text-gray-300 hover:text-white transition-all duration-300"
                     >
-                      <div className={`w-0 h-0.5 bg-gradient-to-r ${section.gradient} rounded-full group-hover/item:w-6 transition-all duration-300`}></div>
+                      <div className={`w-0 h-0.5 bg-linear-to-r ${section.gradient} rounded-full group-hover/item:w-6 transition-all duration-300`}></div>
                       <span className="text-sm lg:text-base group-hover/item:translate-x-1.5 transition-transform duration-300">
                         {item}
                       </span>
@@ -166,10 +166,10 @@ const Footer = () => {
           {/* Newsletter Column - Takes 3 columns */}
           <div className="lg:col-span-3 md:col-span-2">
             <div className="relative group/newsletter">
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10 rounded-3xl blur-2xl opacity-0 group-hover/newsletter:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-pink-500/10 to-purple-500/10 rounded-3xl blur-2xl opacity-0 group-hover/newsletter:opacity-100 transition-opacity duration-500"></div>
               
               <div className="relative">
-                <h3 className="font-bold text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-xl lg:text-2xl mb-2">
+                <h3 className="font-bold text-transparent bg-linear-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-xl lg:text-2xl mb-2">
                   Join Our Newsletter
                 </h3>
                 <p className="text-gray-400 text-sm lg:text-base mb-6">
@@ -178,7 +178,7 @@ const Footer = () => {
 
                 <form onSubmit={handleSubscribe} className="space-y-3">
                   <div className="relative group/input">
-                    <div className="absolute inset-0 bg-gradient-to-r from-pink-500/30 to-purple-500/30 rounded-xl blur opacity-0 group-hover/input:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-linear-to-r from-pink-500/30 to-purple-500/30 rounded-xl blur opacity-0 group-hover/input:opacity-100 transition-opacity duration-300"></div>
                     <input
                       type="email"
                       placeholder="Enter your email"
@@ -190,7 +190,7 @@ const Footer = () => {
                   </div>
                   <button
                     type="submit"
-                    className="relative w-full px-6 py-3.5 bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 text-white rounded-xl font-bold shadow-2xl hover:shadow-pink-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 overflow-hidden group/btn bg-size-200"
+                    className="relative w-full px-6 py-3.5 bg-linear-to-r from-pink-500 via-purple-500 to-pink-500 text-white rounded-xl font-bold shadow-2xl hover:shadow-pink-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 overflow-hidden group/btn bg-size-200"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2 text-sm lg:text-base">
                       {isSubscribed ? (
@@ -204,7 +204,7 @@ const Footer = () => {
                         'Subscribe Now'
                       )}
                     </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-linear-to-r from-purple-600 to-pink-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
                   </button>
                 </form>
 
@@ -221,13 +221,13 @@ const Footer = () => {
                   <div>
                     <h5 className="font-semibold text-white text-sm lg:text-base mb-4 relative inline-block">
                       <span className="relative z-10">We Accept</span>
-                      <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full"></div>
+                      <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-linear-to-r from-pink-500 to-purple-500 rounded-full"></div>
                     </h5>
                     <div className="flex flex-wrap gap-3">
                       {/* Visa */}
                       <div className="group/card cursor-pointer transform hover:scale-110 transition-all duration-300">
                         <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur-md opacity-0 group-hover/card:opacity-60 transition-opacity"></div>
+                          <div className="absolute inset-0 bg-linear-to-r from-blue-500 to-purple-500 rounded-lg blur-md opacity-0 group-hover/card:opacity-60 transition-opacity"></div>
                           <div className="relative bg-white px-4 py-2.5 rounded-lg shadow-xl">
                             <svg className="h-7 w-auto" viewBox="0 0 48 32" fill="none">
                               <rect width="48" height="32" rx="4" fill="white"/>
@@ -240,7 +240,7 @@ const Footer = () => {
                       {/* Mastercard */}
                       <div className="group/card cursor-pointer transform hover:scale-110 transition-all duration-300">
                         <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg blur-md opacity-0 group-hover/card:opacity-60 transition-opacity"></div>
+                          <div className="absolute inset-0 bg-linear-to-r from-orange-500 to-red-500 rounded-lg blur-md opacity-0 group-hover/card:opacity-60 transition-opacity"></div>
                           <div className="relative bg-white px-4 py-2.5 rounded-lg shadow-xl">
                             <svg className="h-7 w-auto" viewBox="0 0 48 32" fill="none">
                               <rect width="48" height="32" rx="4" fill="white"/>
@@ -254,7 +254,7 @@ const Footer = () => {
                       {/* UPI */}
                       <div className="group/card cursor-pointer transform hover:scale-110 transition-all duration-300">
                         <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg blur-md opacity-0 group-hover/card:opacity-60 transition-opacity"></div>
+                          <div className="absolute inset-0 bg-linear-to-r from-orange-500 to-yellow-500 rounded-lg blur-md opacity-0 group-hover/card:opacity-60 transition-opacity"></div>
                           <div className="relative bg-white px-4 py-2.5 rounded-lg shadow-xl">
                             <span className="font-black text-orange-600 text-2xl tracking-wider">UPI</span>
                           </div>
@@ -274,8 +274,8 @@ const Footer = () => {
             {/* SSL Badge */}
             <div className="flex items-center gap-3 group/ssl cursor-pointer order-2 sm:order-1">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl blur-md group-hover/ssl:blur-lg transition-all animate-pulse"></div>
-                <div className="relative w-11 h-11 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-xl transform group-hover/ssl:scale-110 group-hover/ssl:rotate-6 transition-all duration-300">
+                <div className="absolute inset-0 bg-linear-to-br from-orange-500 to-red-600 rounded-xl blur-md group-hover/ssl:blur-lg transition-all animate-pulse"></div>
+                <div className="relative w-11 h-11 bg-linear-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-xl transform group-hover/ssl:scale-110 group-hover/ssl:rotate-6 transition-all duration-300">
                   <span className="text-white font-black text-xs">SSL</span>
                 </div>
               </div>
@@ -285,7 +285,7 @@ const Footer = () => {
             </div>
             
             {/* Copyright */}
-            <p className="text-gray-400 text-xs lg:text-sm text-center order-1 sm:order-2 hover:text-transparent hover:bg-gradient-to-r hover:from-pink-400 hover:to-purple-400 hover:bg-clip-text transition-all duration-300 cursor-default">
+            <p className="text-gray-400 text-xs lg:text-sm text-center order-1 sm:order-2 hover:text-transparent hover:bg-linear-to-r hover:from-pink-400 hover:to-purple-400 hover:bg-clip-text transition-all duration-300 cursor-default">
               © 2026 Kalamandir. All Rights Reserved
             </p>
             
@@ -295,7 +295,7 @@ const Footer = () => {
               className="relative w-11 h-11 rounded-xl border-2 border-purple-500/40 flex items-center justify-center text-purple-400 transition-all duration-300 order-3 group/scroll overflow-hidden hover:scale-110 hover:border-purple-400"
               aria-label="Scroll to top"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-500 to-purple-600 opacity-0 group-hover/scroll:opacity-100 transition-opacity rounded-xl"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-pink-500 to-purple-600 opacity-0 group-hover/scroll:opacity-100 transition-opacity rounded-xl"></div>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="relative z-10 w-6 h-6 group-hover/scroll:text-white transform group-hover/scroll:-translate-y-0.5 transition-all">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
               </svg>
