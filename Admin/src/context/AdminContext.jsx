@@ -40,7 +40,7 @@ export const AdminProvider = ({ children }) => {
     if (user?.role === "admin") {
       fetchOrders();
     }
-  }, [user,products]);
+  }, [user]);
 
   // 🔹 Login
   const login = (data) => {
