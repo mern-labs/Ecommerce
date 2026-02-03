@@ -2,6 +2,7 @@ import axios from "axios";
 
 const apiInstance = axios.create({
   baseURL: "http://localhost:3000",
+  withCredentials: true
 });
 
 // ✅ Request interceptor to attach token
@@ -29,12 +30,13 @@ apiInstance.interceptors.response.use(
   }
 );
 
-// ---------------------- Banner ----------------------
-// export const getBanner = async () => {
-//   const res = await apiInstance.get("/api/banners");
-//   console.log(res.data);
-//   return res;
-// };
+
+// ---------------Get user --------------
+export const getUsers=async()=>{
+  const res= await apiInstance.get("/api/get/users");
+  return res
+}
+
 
 // ---------------------- Auth ----------------------
 export const register = async ({ name, email, password }) => {
@@ -48,114 +50,63 @@ export const login = async ({ email, password }) => {
 };
 
 // // ---------------------- Products ----------------------
-// export const getProducts = async () => {
-//   const res = await apiInstance.get("/api/products");
-//   return res;
-// };
-
-
-// // Get product by ID
-// export const getProductById = async (id) => {
-//   try {
-//     const res = await apiInstance.get(`/api/products/${id}`);
-//     return res.data; // will contain { success: true, product: {...} }
-//   } catch (err) {
-//     console.error("Get product by ID error:", err.message);
-//     throw err;
-//   }
-// };
-
-// // ---------------------- Wishlist ----------------------
-// export const getWishlist = async () => {
-//   const res = await apiInstance.get("/api/wishlist");
-//   return res;
-// };
-
-// // Add product to wishlist
-// export const addWishlist = async (productId) => {
-//   const res = await apiInstance.post("/api/wishlist/add", { productId });
-//   return res;
-// };
-
-// // Remove product from wishlist
-// export const removeWishlist = async (productId) => {
-//   const res = await apiInstance.post("/api/wishlist/remove", { productId });
-//   return res;
-// };
-
-
-// // ✅ Add to cart
-// export const addToCart = async (productId, quantity = 1) => {
-//   const res = await apiInstance.post(
-//     "/api/addtocart/add",
-//     { productId, quantity }
-//   );
-//   return res.data;
-// };
-
-
-// // ✅ Get cart
-// export const getAddToCart = async () => {
-//   const res = await apiInstance.get("/api/addtocart");
-//   return res.data;
-// };
-
-
-// // ✅ Remove from cart
-// export const removeFromCart = async (productId) => {
-//   const res = await apiInstance.post(
-//     "/api/addtocart/remove",
-//     { productId }
-//   );
-//   return res.data;
-// };
-
-
-// // ✅ Update quantity
-// export const updateAddToCart = async (productId, quantity) => {
-//   const res = await apiInstance.put(
-//     "/api/addtocart/update",
-//     { productId, quantity }
-//   );
-//   return res.data;
-// };
-
-
-// // ✅ Clear cart
-// export const clearAddToCart = async () => {
-//   const res = await apiInstance.delete("/api/addtocart/clear");
-//   return res.data;
-// };
-
-
-// // Make a order
-// export const makeOrder = async (orderData) => {
-//   const res = await apiInstance.post("/api/order/add",orderData)
-//   return res
-// }
-
-// // Get the order
-// export const getOrder = async () => {
-//   const res = await apiInstance.get("/api/order",)
-//   return res
-// }
-
-// // delete the order
-// export const removeOrder = async (orderId) => {
-//   const res = await apiInstance.delete(`/api/order/delete/${orderId}`);
-//   return res;
-// };
-
-
-
-
-// --------------------------ADMIN-------------------
-export const getAllOrders=async()=>{
-  const res=await apiInstance.get("/order/admin/orders")
+export const getProducts = async () => {
+  const res = await apiInstance.get("/api/products");
   console.log(res);
+  return res;
+};
+
+// -------------------------Add producsts --------------
+
+export const createProduct = async (data) => {
+  const res = await apiInstance.post("/api/products", data,{
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+  return res.data;
+};
+
+// ----------------------Delete products-----------------
+export const deleteProduct = async (productID) => {
+  const res = await apiInstance.delete(`/api/products/delete/${productID}`)
+  return res;
+};
+
+// -----------------------update products ----------------
+export const updateProduct = async (id, updateData) => {
+  try {
+    const res = await apiInstance.put(
+      `/api/products/update/${id}`,
+      updateData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }
+    );
+
+    return res;
+  } catch (error) {
+    console.error("Update Product Error:", error);
+    throw error;
+  }
+};
+
+
+// --------------------------Get orders-------------------
+export const getAllOrders=async()=>{
+  const res=await apiInstance.get("/api/order/admin/orders")
+  console.log(res.data);
   return res
 }
 
 
-// ---------------------- Export axios instance ----------------------
+//  ------------------------Delete User
+export const deleteUser=async(id)=>{
+  const res=await apiInstance.delete(`/api/delete/${id}`)
+  return res
+}
+
+
 export default apiInstance;

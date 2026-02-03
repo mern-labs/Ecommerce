@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getAllOrders } from "../interceptor/interceptor";
+import { getProducts } from "../interceptor/interceptor";
 
 const AdminDataContext = createContext(null);
 
@@ -9,6 +10,7 @@ export const AdminProvider = ({ children }) => {
   const [userLoading, setUserLoading] = useState(true);
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [products, setProducts] = useState([]);
 
   // 🔹 Load user from localStorage
   useEffect(() => {
@@ -26,6 +28,8 @@ export const AdminProvider = ({ children }) => {
         setOrdersLoading(true);
         const res = await getAllOrders();
         setOrders(res?.data?.orders || []);
+        console.log("Admi context",res.data.orders);
+        
       } catch (err) {
         setError(err.response?.data?.message || err.message);
       } finally {
@@ -36,7 +40,7 @@ export const AdminProvider = ({ children }) => {
     if (user?.role === "admin") {
       fetchOrders();
     }
-  }, [user]);
+  }, [user,products]);
 
   // 🔹 Login
   const login = (data) => {
@@ -54,17 +58,32 @@ export const AdminProvider = ({ children }) => {
     setError(null);
   };
 
+
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const res = await getProducts();
+      setProducts(res.data.data || []);
+    } catch (err) {
+      console.log("Product fetch error:", err.message);
+    }
+  };
+  fetchProducts();
+}, []);
+
+
   return (
     <AdminDataContext.Provider
       value={{
         user,
         orders,
+        products,
         userLoading,
         ordersLoading,
         loading: userLoading, // ✅ IMPORTANT
         error,
         login,
-        logout,
+        logout
       }}
     >
       {children}

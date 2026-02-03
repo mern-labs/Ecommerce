@@ -24,15 +24,15 @@ const App = () => {
       <AdminProvider>
         <Routes>
 
+          {/* ================= DEFAULT ================= */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+
           {/* ================= AUTH ================= */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           {/* ================= ADMIN ================= */}
-          <Route
-            path="/admin"
-            element={<Navigate to="/admin/dashboard" replace />}
-          />
+          <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
 
           <Route
             path="/admin/dashboard"
@@ -95,5 +95,6 @@ const App = () => {
     </BrowserRouter>
   );
 };
+
 
 export default App;

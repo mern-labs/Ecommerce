@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AdminPanel from "../pages/AdminPanel";
+import AdminPanel from "./AdminPanel";
+import { createProduct } from "../interceptor/interceptor";
+import { useAdminData } from "../context/AdminContext";
+import { toast } from "react-toastify";
 
 const AddProduct = () => {
   const navigate = useNavigate();
+  const { fetchProducts } = useAdminData();
 
   const initialFormState = {
     name: "",
@@ -13,8 +17,9 @@ const AddProduct = () => {
     length: "",
     price: "",
     category: "",
-    image: "",
     stock: "",
+    ratings: "",
+    reviews: "",
     instock: true
   };
 
@@ -22,38 +27,17 @@ const AddProduct = () => {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const categories = [
     "Party wear",
-    "Casual wear",
-    "Wedding wear",
-    "Festive wear",
-    "Office wear",
-    "Traditional wear",
-    "Designer wear",
-    "Bridal wear",
-    "Cotton",
-    "Silk",
-    "Chiffon",
-    "Georgette",
-    "Net",
-    "Kanjivaram",
-    "Banarasi"
-  ];
-
-  const materials = [
-    "Chiffon",
-    "Silk",
-    "Cotton",
-    "Georgette",
-    "Net",
-    "Satin",
-    "Crepe",
-    "Velvet",
-    "Organza",
-    "Tussar Silk",
-    "Kanjivaram Silk",
-    "Banarasi Silk"
+    "Cotton Saree",
+    "Silk Saree",
+    "Traditional Saree",
+    "Fabric Saree",
+    "Transparent Saree",
+    "Plain Saree",
+    "Digital Print Saree"
   ];
 
   const handleInputChange = (e) => {
@@ -62,6 +46,7 @@ const AddProduct = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
     // Clear error for this field
     if (errors[name]) {
       setErrors(prev => ({
@@ -94,10 +79,6 @@ const AddProduct = () => {
       }
 
       setImageFile(file);
-      setFormData(prev => ({
-        ...prev,
-        image: file.name
-      }));
       
       // Create preview
       const reader = new FileReader();
@@ -120,12 +101,12 @@ const AddProduct = () => {
     if (!formData.name.trim()) newErrors.name = "Product name is required";
     if (!formData.brand.trim()) newErrors.brand = "Brand is required";
     if (!formData.color.trim()) newErrors.color = "Color is required";
-    if (!formData.material) newErrors.material = "Material is required";
+    if (!formData.material.trim()) newErrors.material = "Material is required";
     if (!formData.length.trim()) newErrors.length = "Length is required";
     if (!formData.price || formData.price <= 0) newErrors.price = "Valid price is required";
     if (!formData.category) newErrors.category = "Category is required";
     if (!formData.stock || formData.stock < 0) newErrors.stock = "Valid stock quantity is required";
-    if (!formData.image) newErrors.image = "Product image is required";
+    if (!imageFile) newErrors.image = "Product image is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -135,30 +116,50 @@ const AddProduct = () => {
     e.preventDefault();
     
     if (!validateForm()) {
-      alert("Please fill in all required fields correctly");
+      toast.error("Please fill in all required fields correctly");
       return;
     }
 
-    // Create product object matching MongoDB structure
-    const productData = {
-      name: formData.name,
-      brand: formData.brand,
-      color: formData.color,
-      material: formData.material,
-      length: formData.length,
-      price: parseFloat(formData.price),
-      category: formData.category,
-      image: formData.image,
-      stock: parseInt(formData.stock),
-      instock: formData.instock,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+    setIsSubmitting(true);
 
-    console.log("Product Data to Submit:", JSON.stringify(productData, null, 2));
-    
-    alert(`Product Added Successfully!\n\nProduct Data:\n${JSON.stringify(productData, null, 2)}`);
-    // navigate('/admin/products');
+    try {
+      // Create FormData for file upload
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('brand', formData.brand);
+      formDataToSend.append('color', formData.color);
+      formDataToSend.append('material', formData.material);
+      formDataToSend.append('length', formData.length);
+      formDataToSend.append('price', parseFloat(formData.price));
+      formDataToSend.append('category', formData.category);
+      formDataToSend.append('stock', parseInt(formData.stock));
+      formDataToSend.append('ratings', formData.ratings ? parseFloat(formData.ratings) : 0);
+      formDataToSend.append('reviews', formData.reviews ? parseInt(formData.reviews) : 0);
+      formDataToSend.append('instock', formData.instock);
+      formDataToSend.append('image', imageFile);
+
+      // Call the API using the interceptor
+      const response = await createProduct(formDataToSend);
+      
+      console.log('Product added successfully:', response);
+      
+      toast.success('Product added successfully!');
+      
+      // Refresh the products list immediately
+      if (fetchProducts) {
+        await fetchProducts();
+      }
+      
+      // Navigate back to products page
+      navigate('/admin/products');
+      
+    } catch (error) {
+      console.error('Error adding product:', error);
+      console.error('Error response:', error.response?.data);
+      toast.error(`Failed to add product: ${error.response?.data?.message || error.message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -196,7 +197,7 @@ const AddProduct = () => {
 
         {/* Form Section */}
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="bg-linear-to-r from-pink-500 to-red-500 text-white px-6 py-4">
+          <div className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-4">
             <h2 className="text-xl font-bold">Product Information</h2>
           </div>
 
@@ -228,7 +229,7 @@ const AddProduct = () => {
                   name="brand"
                   value={formData.brand}
                   onChange={handleInputChange}
-                  placeholder="e.g., Indya"
+                  placeholder="e.g., Royal Weaves"
                   className={`w-full px-4 py-3 border ${errors.brand ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition-all`}
                 />
                 {errors.brand && <p className="text-red-500 text-xs mt-1">{errors.brand}</p>}
@@ -244,28 +245,25 @@ const AddProduct = () => {
                   name="color"
                   value={formData.color}
                   onChange={handleInputChange}
-                  placeholder="e.g., Peach"
+                  placeholder="e.g., Peach, Red, Blue"
                   className={`w-full px-4 py-3 border ${errors.color ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition-all`}
                 />
                 {errors.color && <p className="text-red-500 text-xs mt-1">{errors.color}</p>}
               </div>
 
-              {/* Material */}
+              {/* Material - Changed from dropdown to text input */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Material <span className="text-red-500">*</span>
                 </label>
-                <select
+                <input
+                  type="text"
                   name="material"
                   value={formData.material}
                   onChange={handleInputChange}
+                  placeholder="e.g., Chiffon, Silk, Cotton, Georgette"
                   className={`w-full px-4 py-3 border ${errors.material ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition-all`}
-                >
-                  <option value="">Select Material</option>
-                  {materials.map((material, index) => (
-                    <option key={index} value={material}>{material}</option>
-                  ))}
-                </select>
+                />
                 {errors.material && <p className="text-red-500 text-xs mt-1">{errors.material}</p>}
               </div>
 
@@ -279,7 +277,7 @@ const AddProduct = () => {
                   name="length"
                   value={formData.length}
                   onChange={handleInputChange}
-                  placeholder="e.g., 5.5 meters"
+                  placeholder="e.g., 5.5m, 6m, 6.5m"
                   className={`w-full px-4 py-3 border ${errors.length ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition-all`}
                 />
                 {errors.length && <p className="text-red-500 text-xs mt-1">{errors.length}</p>}
@@ -338,6 +336,42 @@ const AddProduct = () => {
                 />
                 {errors.stock && <p className="text-red-500 text-xs mt-1">{errors.stock}</p>}
               </div>
+
+              {/* Ratings (Optional) */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Ratings (Optional)
+                </label>
+                <input
+                  type="number"
+                  name="ratings"
+                  value={formData.ratings}
+                  onChange={handleInputChange}
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  placeholder="e.g., 4.5"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition-all"
+                />
+                <p className="text-xs text-gray-500 mt-1">Rating out of 5 (e.g., 4.8)</p>
+              </div>
+
+              {/* Reviews Count (Optional) */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Reviews Count (Optional)
+                </label>
+                <input
+                  type="number"
+                  name="reviews"
+                  value={formData.reviews}
+                  onChange={handleInputChange}
+                  min="0"
+                  placeholder="e.g., 47"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition-all"
+                />
+                <p className="text-xs text-gray-500 mt-1">Number of customer reviews</p>
+              </div>
             </div>
 
             {/* Image Upload */}
@@ -356,7 +390,7 @@ const AddProduct = () => {
                   <p className="text-xs text-gray-500 mt-2">
                     Upload a product image (JPG, PNG, WEBP). Max size: 5MB
                   </p>
-                  {formData.image && <p className="text-xs text-green-600 mt-1">✓ {formData.image}</p>}
+                  {imageFile && <p className="text-xs text-green-600 mt-1">✓ {imageFile.name}</p>}
                   {errors.image && <p className="text-red-500 text-xs mt-1">{errors.image}</p>}
                 </div>
                 {imagePreview && (
@@ -373,7 +407,7 @@ const AddProduct = () => {
 
             {/* In Stock Toggle */}
             <div>
-              <div className="flex items-start gap-3 p-4 bg-linear-to-r from-gray-50 to-gray-100 rounded-lg border border-gray-200">
+              <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <input
                   type="checkbox"
                   name="instock"
@@ -407,15 +441,27 @@ const AddProduct = () => {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-6 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-100 transition-all"
+                disabled={isSubmitting}
+                className="px-6 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-8 py-2.5 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg hover:shadow-xl"
+                disabled={isSubmitting}
+                className="px-8 py-2.5 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                Add Product
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Adding...
+                  </>
+                ) : (
+                  'Add Product'
+                )}
               </button>
             </div>
           </div>
