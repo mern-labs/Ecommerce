@@ -9,8 +9,6 @@ const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -46,12 +44,6 @@ const AdminUsers = () => {
 
     return matchesSearch && matchesStatus;
   });
-
-  // Handle preview user
-  const handlePreviewUser = (user) => {
-    setSelectedUser(user);
-    setShowPreviewModal(true);
-  };
 
   // Handle delete user — opens the confirmation modal
   const handleDeleteUser = (user) => {
@@ -385,33 +377,6 @@ const AdminUsers = () => {
                       </td>
                       <td className="px-5 lg:px-6 py-4">
                         <div className="flex items-center gap-2">
-                          {/* View button */}
-                          <button
-                            onClick={() => handlePreviewUser(user)}
-                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="View"
-                          >
-                            <svg
-                              className="w-5 h-5 text-blue-600"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                              />
-                            </svg>
-                          </button>
-
                           {/* Delete button */}
                           <button
                             onClick={() => handleDeleteUser(user)}
@@ -465,136 +430,6 @@ const AdminUsers = () => {
           </div>
         </div>
       </div>
-
-      {/* Preview Modal */}
-      {showPreviewModal && selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-linear-to-r from-pink-500 to-red-500 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">User Details</h2>
-              <button
-                onClick={() => setShowPreviewModal(false)}
-                className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-colors"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div className="p-6 space-y-6">
-              {/* User Avatar and Basic Info */}
-              <div className="flex items-center gap-4 pb-6 border-b border-gray-200">
-                <div className="w-20 h-20 rounded-full bg-linear-to-r from-pink-500 to-red-500 flex items-center justify-center text-white text-3xl font-bold">
-                  {selectedUser.name?.charAt(0).toUpperCase()}
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-gray-800">
-                    {selectedUser.name}
-                  </h3>
-                  <p className="text-gray-600">{selectedUser.email}</p>
-                  <div className="flex gap-2 mt-2">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${getRoleBadge(
-                        selectedUser.role
-                      )}`}
-                    >
-                      {selectedUser.role}
-                    </span>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                        selectedUser.status
-                      )}`}
-                    >
-                      {selectedUser.status}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Detailed Information */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
-                    User ID
-                  </p>
-                  <p className="text-lg font-medium text-gray-800">
-                    {selectedUser.id}
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
-                    Total Orders
-                  </p>
-                  <p className="text-lg font-medium text-gray-800">
-                    {selectedUser.orders || 0}
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
-                    Joined Date
-                  </p>
-                  <p className="text-lg font-medium text-gray-800">
-                    {selectedUser.joined}
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
-                    Account Status
-                  </p>
-                  <p className="text-lg font-medium text-gray-800">
-                    {selectedUser.status}
-                  </p>
-                </div>
-              </div>
-
-              {/* Additional Info Section */}
-              <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                <h4 className="font-semibold text-gray-800">
-                  Additional Information
-                </h4>
-                <div className="grid grid-cols-1 gap-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Last Login:</span>
-                    <span className="font-medium text-gray-800">N/A</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Spent:</span>
-                    <span className="font-medium text-gray-800">N/A</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Phone:</span>
-                    <span className="font-medium text-gray-800">N/A</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
-              <button
-                onClick={() => setShowPreviewModal(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && userToDelete && (
