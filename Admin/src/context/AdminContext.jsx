@@ -23,6 +23,7 @@ export const AdminProvider = ({ children }) => {
 
   // 🔹 Fetch all orders (ADMIN ONLY)
   useEffect(() => {
+    if(!user) return
     const fetchOrders = async () => {
       try {
         setOrdersLoading(true);
@@ -63,7 +64,7 @@ useEffect(() => {
   const fetchProducts = async () => {
     try {
       const res = await getProducts();
-      setProducts(res.data.data || []);
+      setProducts(res?.data?.products || res?.data?.data || []);
     } catch (err) {
       console.log("Product fetch error:", err.message);
     }
