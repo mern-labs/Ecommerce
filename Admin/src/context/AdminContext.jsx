@@ -61,6 +61,7 @@ export const AdminProvider = ({ children }) => {
 
 
 useEffect(() => {
+  if(!user) return
   const fetchProducts = async () => {
     try {
       const res = await getProducts();
@@ -70,7 +71,7 @@ useEffect(() => {
     }
   };
   fetchProducts();
-}, []);
+}, [user]);
 
 
   return (
