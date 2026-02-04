@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 
 const AdminUsers = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,6 +21,7 @@ const AdminUsers = () => {
       setLoading(true);
       setError(null);
       const response = await getUsers();
+      console.log("Fetched users:", response.data); // Debug log
       setUsers(response.data || []);
     } catch (err) {
       setError(err.message || "Failed to fetch users");
@@ -31,18 +31,43 @@ const AdminUsers = () => {
     }
   };
 
-  // Filter users based on search query and status
+  // Calculate counts with flexible field checking
+  const totalUsers = users.length;
+  
+  // Check for active users - handle different possible field names
+  const activeUsers = users.filter((u) => {
+    // Try different variations of status field
+    return u.status === "Active" || 
+           u.status === "active" || 
+           u.isActive === true ||
+           u.active === true;
+  }).length;
+  
+  // Check for admin users - handle different possible field names
+  const adminUsers = users.filter((u) => {
+    // Try different variations of role field
+    return u.role === "Admin" || 
+           u.role === "admin" || 
+           u.isAdmin === true ||
+           u.admin === true;
+  }).length;
+
+  // Regular users (non-admin users)
+  const regularUsers = users.filter((u) => {
+    // Try different variations of role field - exclude admins
+    return u.role !== "Admin" && 
+           u.role !== "admin" && 
+           u.isAdmin !== true &&
+           u.admin !== true;
+  }).length;
+
+  // Filter users based on search query only
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesStatus =
-      filterStatus === "all" ||
-      (filterStatus === "active" && user.status === "Active") ||
-      (filterStatus === "inactive" && user.status === "Inactive");
-
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   });
 
   // Handle delete user — opens the confirmation modal
@@ -63,14 +88,14 @@ const AdminUsers = () => {
       // Close modal and reset
       setShowDeleteModal(false);
       setUserToDelete(null);
-      toast.success("User deletes sucessfully...")
+      toast.success("User deleted successfully");
     } catch (err) {
       console.error("Error deleting user:", err);
       const errorMessage =
         err?.response?.data?.message ||
         err?.message ||
         "Failed to delete user. Please try again.";
-      alert(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setDeleteLoading(false);
     }
@@ -137,7 +162,7 @@ const AdminUsers = () => {
   return (
     <AdminPanel>
       <div className="space-y-6">
-        {/* Header — "Add New User" button removed */}
+        {/* Header */}
         <div>
           <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-800">
             Users Management
@@ -147,15 +172,15 @@ const AdminUsers = () => {
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Stats Cards - Only 3 cards now */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Total Users */}
           <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Total Users</p>
                 <h3 className="text-2xl font-bold text-gray-800 mt-1">
-                  {users.length}
+                  {totalUsers}
                 </h3>
               </div>
               <div className="p-3 bg-blue-100 rounded-lg">
@@ -176,13 +201,13 @@ const AdminUsers = () => {
             </div>
           </div>
 
-          {/* Active Users */}
+          {/* Users (excluding admins) */}
           <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Active Users</p>
+                <p className="text-sm text-gray-600">Users</p>
                 <h3 className="text-2xl font-bold text-gray-800 mt-1">
-                  {users.filter((u) => u.status === "Active").length}
+                  {regularUsers}
                 </h3>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
@@ -209,7 +234,7 @@ const AdminUsers = () => {
               <div>
                 <p className="text-sm text-gray-600">Admins</p>
                 <h3 className="text-2xl font-bold text-gray-800 mt-1">
-                  {users.filter((u) => u.role === "Admin").length}
+                  {adminUsers}
                 </h3>
               </div>
               <div className="p-3 bg-pink-100 rounded-lg">
@@ -229,80 +254,31 @@ const AdminUsers = () => {
               </div>
             </div>
           </div>
-
-          {/* New This Month */}
-          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">New This Month</p>
-                <h3 className="text-2xl font-bold text-gray-800 mt-1">
-                  {
-                    users.filter((u) => {
-                      const joinedDate = new Date(u.joined);
-                      const currentDate = new Date();
-                      return (
-                        joinedDate.getMonth() === currentDate.getMonth() &&
-                        joinedDate.getFullYear() === currentDate.getFullYear()
-                      );
-                    }).length
-                  }
-                </h3>
-              </div>
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <svg
-                  className="w-6 h-6 text-purple-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Search and Filter */}
+        {/* Search Only - Status dropdown removed */}
         <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search users by name or email..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
-                />
-                <svg
-                  className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm font-medium"
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search users by name or email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+            />
+            <svg
+              className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
           </div>
         </div>
 
@@ -353,7 +329,7 @@ const AdminUsers = () => {
                       </td>
                       <td className="px-5 lg:px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-linear-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-semibold">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-semibold">
                             {user.name?.charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -417,7 +393,7 @@ const AdminUsers = () => {
               <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                 Previous
               </button>
-              <button className="px-3 py-1.5 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg text-sm font-medium">
+              <button className="px-3 py-1.5 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg text-sm font-medium">
                 1
               </button>
               <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
