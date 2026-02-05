@@ -202,7 +202,7 @@ const AddProduct = () => {
 
           {/* Form Section */}
           <form onSubmit={handleSubmit} className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-4 sm:px-6 py-3 sm:py-4">
+            <div className="bg-linear-to-r from-pink-500 to-red-500 text-white px-4 sm:px-6 py-3 sm:py-4">
               <h2 className="text-lg sm:text-xl font-bold">Product Information</h2>
             </div>
 
@@ -415,7 +415,7 @@ const AddProduct = () => {
                     {errors.image && <p className="text-red-500 text-xs mt-1">{errors.image}</p>}
                   </div>
                   {imagePreview && (
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-gray-200 rounded-lg overflow-hidden shadow-md flex-shrink-0">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-gray-200 rounded-lg overflow-hidden shadow-md shrink-0">
                       <img 
                         src={imagePreview} 
                         alt="Preview" 
@@ -435,7 +435,7 @@ const AddProduct = () => {
                     id="instock"
                     checked={formData.instock}
                     onChange={handleInputChange}
-                    className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600 rounded focus:ring-pink-500 mt-0.5 cursor-pointer flex-shrink-0"
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600 rounded focus:ring-pink-500 mt-0.5 cursor-pointer shrink-0"
                   />
                   <label htmlFor="instock" className="cursor-pointer flex-1">
                     <span className="text-xs sm:text-sm font-semibold text-gray-700 block">
@@ -470,7 +470,7 @@ const AddProduct = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-2.5 text-sm sm:text-base bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-2.5 text-sm sm:text-base bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>

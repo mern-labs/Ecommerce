@@ -14,7 +14,7 @@ const AdminSettings = () => {
 
   return (
     <AdminPanel>
-      <div className="space-y-6">
+      <div className="space-y-6 -mt-3">
         {/* Header */}
         <div>
           <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-800">Settings</h1>
@@ -30,7 +30,7 @@ const AdminSettings = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 min-w-fit px-6 py-4 text-sm font-semibold transition-all ${
                   activeTab === tab.id
-                    ? "bg-gradient-to-r from-pink-500 to-red-500 text-white"
+                    ? "bg-linear-to-r from-pink-500 to-red-500 text-white"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
@@ -92,7 +92,7 @@ const AdminSettings = () => {
                 </select>
               </div>
 
-              <button className="px-6 py-2.5 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg">
+              <button className="px-6 py-2.5 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg">
                 Save Changes
               </button>
             </div>
@@ -106,7 +106,7 @@ const AdminSettings = () => {
             
             <div className="space-y-6">
               <div className="flex items-center gap-6">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                <div className="w-24 h-24 rounded-full bg-linear-to-r from-pink-500 to-red-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
                   A
                 </div>
                 <div>
@@ -163,7 +163,7 @@ const AdminSettings = () => {
                 />
               </div>
 
-              <button className="px-6 py-2.5 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg">
+              <button className="px-6 py-2.5 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg">
                 Update Profile
               </button>
             </div>
@@ -203,7 +203,7 @@ const AdminSettings = () => {
                 />
               </div>
 
-              <button className="px-6 py-2.5 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg">
+              <button className="px-6 py-2.5 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg">
                 Change Password
               </button>
 
@@ -216,7 +216,7 @@ const AdminSettings = () => {
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
                   </label>
                 </div>
               </div>
@@ -245,13 +245,13 @@ const AdminSettings = () => {
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
                   </label>
                 </div>
               ))}
             </div>
 
-            <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg">
+            <button className="mt-6 px-6 py-2.5 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg">
               Save Preferences
             </button>
           </div>
@@ -314,13 +314,13 @@ const AdminSettings = () => {
                     <p className="text-sm font-semibold text-gray-800">{method.name}</p>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" defaultChecked={method.enabled} className="sr-only peer" />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
                     </label>
                   </div>
                 ))}
               </div>
 
-              <button className="px-6 py-2.5 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg">
+              <button className="px-6 py-2.5 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg">
                 Save Payment Settings
               </button>
             </div>

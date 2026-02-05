@@ -161,7 +161,7 @@ const AdminUsers = () => {
 
   return (
     <AdminPanel>
-      <div className="space-y-6">
+      <div className="space-y-6 -mt-3">
         {/* Header */}
         <div>
           <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-800">

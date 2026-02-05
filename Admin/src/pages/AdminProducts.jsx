@@ -281,7 +281,7 @@ const AdminProducts = () => {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <AdminPanel>
-      <div className="space-y-6">
+      <div className="space-y-6 -mt-3">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -296,7 +296,7 @@ const AdminProducts = () => {
 
           <button
             onClick={handleAddClick}
-            className="px-4 py-2 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg text-sm font-medium hover:from-pink-600 hover:to-red-600 transition-all shadow-lg"
+            className="px-4 py-2 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg text-sm font-medium hover:from-pink-600 hover:to-red-600 transition-all shadow-lg"
           >
             <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -499,7 +499,7 @@ const AdminProducts = () => {
             </p>
             <div className="flex gap-2">
               <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">Previous</button>
-              <button className="px-3 py-1.5 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg text-sm font-medium">1</button>
+              <button className="px-3 py-1.5 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg text-sm font-medium">1</button>
               <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">2</button>
               <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">Next</button>
             </div>
@@ -511,7 +511,7 @@ const AdminProducts = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
+            <div className="sticky top-0 bg-linear-to-r from-pink-500 to-red-500 text-white px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
               <h2 className="text-xl font-bold">Edit Product</h2>
               <button
                 onClick={handleCloseModal}
@@ -638,7 +638,7 @@ const AdminProducts = () => {
                   Cancel
                 </button>
                 <button type="submit" disabled={isUpdating}
-                  className="px-6 py-2.5 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                  className="px-6 py-2.5 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                   {isUpdating ? (
                     <>
                       <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -661,7 +661,7 @@ const AdminProducts = () => {
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
-            <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-t-2xl">
+            <div className="bg-linear-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-t-2xl">
               <h2 className="text-xl font-bold">Confirm Delete</h2>
             </div>
 
@@ -697,7 +697,7 @@ const AdminProducts = () => {
                   Cancel
                 </button>
                 <button onClick={handleDeleteConfirm} disabled={isDeleting}
-                  className="px-6 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                  className="px-6 py-2.5 bg-linear-to-r from-red-500 to-red-600 text-white rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                   {isDeleting ? (
                     <>
                       <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -720,7 +720,7 @@ const AdminProducts = () => {
       {showPreviewModal && previewProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
+            <div className="sticky top-0 bg-linear-to-r from-blue-500 to-blue-600 text-white px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
               <h2 className="text-xl font-bold">Product Preview</h2>
               <button onClick={handleClosePreview} className="hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-all">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -777,12 +777,12 @@ const AdminProducts = () => {
                   <div className="flex gap-3 pt-4 border-t border-gray-200">
                     <button
                       onClick={() => { handleClosePreview(); handleEditClick(previewProduct); }}
-                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-lg">
+                      className="flex-1 px-4 py-2.5 bg-linear-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-lg">
                       Edit Product
                     </button>
                     <button
                       onClick={() => { handleClosePreview(); handleDeleteClick(previewProduct); }}
-                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg">
+                      className="flex-1 px-4 py-2.5 bg-linear-to-r from-red-500 to-red-600 text-white rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg">
                       Delete Product
                     </button>
                   </div>

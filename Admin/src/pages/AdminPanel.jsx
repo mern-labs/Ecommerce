@@ -92,7 +92,7 @@ const AdminPanel = ({ children }) => {
     <div className="min-h-screen bg-gray-50">
       {/* Admin Navbar */}
       <header className="w-full sticky top-0 z-50 bg-white shadow-md border-b border-gray-100">
-        <nav className="max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-8 xl:px-12 2xl:px-16 py-2 lg:py-3 xl:py-3.5">
+        <nav className="max-w-480 mx-auto px-4 sm:px-6 md:px-8 lg:px-8 xl:px-12 2xl:px-16 py-2 lg:py-3 xl:py-3.5">
           
           {/* Top Rotating Logo */}
           <div className="w-full flex justify-center mb-2 lg:mb-3">
@@ -113,7 +113,7 @@ const AdminPanel = ({ children }) => {
           <div className="w-full flex items-center justify-between gap-3 lg:gap-4">
             
             {/* Left: Corner Logo */}
-            <Link to="/admin/dashboard" className="flex items-center flex-shrink-0">
+            <Link to="/admin/dashboard" className="flex items-center shrink-0">
               <img
                 src={cornerLogo}
                 alt="Logo"
@@ -125,28 +125,28 @@ const AdminPanel = ({ children }) => {
             {user && (
               <div className="hidden lg:flex flex-1 justify-center items-center px-4 min-w-0">
                 <h2 className="text-sm lg:text-base xl:text-lg font-semibold text-gray-700 truncate">
-                  Welcome back, <span className="bg-gradient-to-r from-pink-500 to-red-500 bg-clip-text text-transparent">{user.name}</span>!
+                  Welcome back, <span className="bg-linear-to-r from-pink-500 to-red-500 bg-clip-text text-transparent">{user.name}</span>!
                 </h2>
               </div>
             )}
 
             {/* Right Side: Profile & Mobile Menu */}
-            <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
+            <div className="flex items-center gap-2 lg:gap-3 shrink-0">
               
               {/* Desktop Profile Dropdown */}
               {user && (
                 <div className="hidden lg:block relative group">
                   <div className="flex items-center gap-2 xl:gap-2.5 cursor-pointer px-2.5 xl:px-3 py-1.5 xl:py-2 rounded-full hover:bg-gray-50 transition-all duration-300">
-                    <div className="w-8 h-8 xl:w-9 xl:h-9 2xl:w-10 2xl:h-10 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-semibold shadow-md text-sm xl:text-base flex-shrink-0">
+                    <div className="w-8 h-8 xl:w-9 xl:h-9 2xl:w-10 2xl:h-10 rounded-full bg-linear-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-semibold shadow-md text-sm xl:text-base shrink-0">
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
                     <div className="text-left min-w-0">
-                      <p className="font-semibold text-gray-700 text-xs xl:text-sm 2xl:text-base max-w-[80px] xl:max-w-[100px] 2xl:max-w-[120px] truncate">
+                      <p className="font-semibold text-gray-700 text-xs xl:text-sm 2xl:text-base max-w-20 xl:max-w-25 2xl:max-w-30 truncate">
                         {user.name}
                       </p>
                       <p className="text-[10px] xl:text-xs text-gray-500 whitespace-nowrap">Administrator</p>
                     </div>
-                    <svg className="w-4 h-4 xl:w-5 xl:h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 xl:w-5 xl:h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
@@ -187,7 +187,7 @@ const AdminPanel = ({ children }) => {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-all flex-shrink-0"
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-all shrink-0"
                 aria-label="Toggle menu"
               >
                 <svg
@@ -211,9 +211,9 @@ const AdminPanel = ({ children }) => {
             <div className="lg:hidden mt-4 bg-gray-50 rounded-xl shadow-inner border border-gray-200 overflow-hidden animate-slideDown">
               {/* Mobile User Info */}
               {user && (
-                <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-pink-50 to-red-50">
+                <div className="px-4 py-3 border-b border-gray-200 bg-linear-to-r from-pink-50 to-red-50">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-bold shadow-md text-lg flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-linear-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-bold shadow-md text-lg shrink-0">
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -267,7 +267,7 @@ const AdminPanel = ({ children }) => {
       {/* Main Content Area with Sidebar */}
       <div className="flex min-h-[calc(100vh-140px)] sm:min-h-[calc(100vh-150px)] lg:min-h-[calc(100vh-160px)]">
         {/* Desktop Sidebar - Fixed with Icons and Names */}
-        <aside className="hidden lg:block fixed left-0 top-[130px] xl:top-[150px] 2xl:top-[165px] h-[calc(100vh-130px)] xl:h-[calc(100vh-150px)] 2xl:h-[calc(100vh-165px)] bg-white border-r border-gray-200 shadow-lg z-40 w-64 xl:w-72 2xl:w-80">
+        <aside className="hidden lg:block fixed left-0 top-32.5 xl:top-37.5 2xl:top-41.25 h-[calc(100vh-130px)] xl:h-[calc(100vh-150px)] 2xl:h-[calc(100vh-165px)] bg-white border-r border-gray-200 shadow-lg z-40 w-64 xl:w-72 2xl:w-80">
           <nav className="h-full overflow-y-auto py-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <ul className="space-y-1 px-3">
               {sidebarItems.map((item, i) => (
@@ -276,11 +276,11 @@ const AdminPanel = ({ children }) => {
                     to={item.path}
                     className={`flex items-center gap-3 xl:gap-4 px-4 py-3 xl:py-3.5 rounded-lg font-medium text-sm xl:text-base transition-all duration-300 group ${
                       isActive(item.path)
-                        ? "bg-gradient-to-r from-pink-500 to-red-500 text-white shadow-md"
+                        ? "bg-linear-to-r from-pink-500 to-red-500 text-white shadow-md"
                         : "text-gray-700 hover:bg-pink-50 hover:text-pink-600"
                     }`}
                   >
-                    <span className={`${isActive(item.path) ? "" : "group-hover:scale-110"} transition-transform flex-shrink-0`}>
+                    <span className={`${isActive(item.path) ? "" : "group-hover:scale-110"} transition-transform shrink-0`}>
                       {item.icon}
                     </span>
                     <span className="whitespace-nowrap">{item.name}</span>
