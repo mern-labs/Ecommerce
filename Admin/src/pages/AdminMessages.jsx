@@ -38,7 +38,7 @@ const AdminMessages = () => {
   const renderContent = () => {
     if (messageLoading) {
       return (
-        <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center justify-center min-h-100">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading messages...</p>
@@ -56,7 +56,7 @@ const AdminMessages = () => {
         </div>
 
         {/* Messages Count */}
-        <div className="bg-gradient-to-r from-pink-500 to-red-500 rounded-2xl p-6 mb-6 text-white shadow-lg">
+        <div className="bg-linear-to-r from-pink-500 to-red-500 rounded-2xl p-6 mb-6 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-2xl font-bold">{messages.length}</p>
@@ -86,10 +86,10 @@ const AdminMessages = () => {
                 className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all border border-gray-100 overflow-hidden"
               >
                 {/* Message Header */}
-                <div className="bg-gradient-to-r from-pink-50 to-purple-50 px-6 py-4 border-b border-gray-100">
+                <div className="bg-linear-to-r from-pink-50 to-purple-50 px-6 py-4 border-b border-gray-100">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-bold">
+                      <div className="w-10 h-10 rounded-full bg-linear-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-bold">
                         {message.name?.charAt(0).toUpperCase() || "?"}
                       </div>
                       <div>
@@ -110,19 +110,19 @@ const AdminMessages = () => {
                 <div className="px-6 py-4 space-y-3">
                   {/* Email */}
                   <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-gray-500 min-w-[60px]">Email</span>
+                    <span className="text-sm font-medium text-gray-500 min-w-15">Email</span>
                     <span className="text-sm text-gray-800 flex-1">{message.email || "N/A"}</span>
                   </div>
 
                   {/* Phone */}
                   <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-gray-500 min-w-[60px]">Phone</span>
+                    <span className="text-sm font-medium text-gray-500 min-w-15">Phone</span>
                     <span className="text-sm text-gray-800 flex-1">{message.phone || "N/A"}</span>
                   </div>
 
                   {/* Message Preview */}
                   <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-gray-500 min-w-[60px]">Message</span>
+                    <span className="text-sm font-medium text-gray-500 min-w-15">Message</span>
                     <span className="text-sm text-gray-600 flex-1 italic">
                       {truncateText(message.message, 100)}
                     </span>
@@ -160,7 +160,7 @@ const AdminMessages = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-pink-500 to-purple-600 px-6 py-6 text-white sticky top-0">
+              <div className="bg-linear-to-r from-pink-500 to-purple-600 px-6 py-6 text-white sticky top-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-bold text-lg">
@@ -202,7 +202,7 @@ const AdminMessages = () => {
                 </div>
 
                 {/* Message Content */}
-                <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6">
+                <div className="bg-linear-to-br from-pink-50 to-purple-50 rounded-xl p-6">
                   <p className="text-sm font-medium text-gray-700 mb-3">Full Message</p>
                   <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
                     {selectedMessage.message || "No message provided"}
@@ -272,7 +272,7 @@ const AdminMessages = () => {
         {/* Toast Notification - Top Right */}
         {toast && (
           <div className="fixed top-6 right-6 z-50 animate-slide-in">
-            <div className={`rounded-xl shadow-lg px-6 py-4 flex items-center gap-3 min-w-[300px] ${
+            <div className={`rounded-xl shadow-lg px-6 py-4 flex items-center gap-3 min-w-75 ${
               toast.type === "success" 
                 ? "bg-green-500 text-white" 
                 : "bg-red-500 text-white"
