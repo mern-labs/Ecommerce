@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAdminData } from "../context/AdminContext";
-import rotatingLogo from "../assets/saree logo.jpg";
+import rotatingLogo from "../assets/saree logo.png";
 import cornerLogo from "../assets/Logo_Fonts.png";
 
 const AdminPanel = ({ children }) => {
@@ -9,8 +9,14 @@ const AdminPanel = ({ children }) => {
   const [flip, setFlip] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
+  const [showClearAllModal, setShowClearAllModal] = useState(false);
+  const [clearedMessages, setClearedMessages] = useState(() => {
+    // Initialize from localStorage
+    const saved = localStorage.getItem('clearedMessages');
+    return saved ? JSON.parse(saved) : [];
+  });
   
-  const { user, logout, messages, unreadCount, fetchMessages } = useAdminData();
+  const { user, logout, messages, unreadCount, fetchMessages, setMessages } = useAdminData();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -70,17 +76,37 @@ const AdminPanel = ({ children }) => {
     navigate("/login");
   };
 
-  const handleClearAll = async () => {
-    if (window.confirm("Are you sure you want to clear all notifications?")) {
-      // Just close the notification - don't clear messages from database
-      setNotificationOpen(false);
-    }
+  const handleClearAllClick = () => {
+    setShowClearAllModal(true);
+  };
+
+  const handleConfirmClearAll = () => {
+    // Get all visible message IDs (not already cleared)
+    const messageIds = visibleMessages.map(msg => msg._id);
+    
+    // Merge with existing cleared messages
+    const updatedClearedMessages = [...new Set([...clearedMessages, ...messageIds])];
+    
+    // Store cleared message IDs in localStorage
+    localStorage.setItem('clearedMessages', JSON.stringify(updatedClearedMessages));
+    setClearedMessages(updatedClearedMessages);
+    
+    setShowClearAllModal(false);
+    setNotificationOpen(false);
+  };
+
+  const handleCancelClearAll = () => {
+    setShowClearAllModal(false);
   };
 
   const handleNotificationClick = useCallback((messageId) => {
     navigate("/admin/messages");
     setNotificationOpen(false);
   }, [navigate]);
+
+  // Filter out cleared messages ONLY for notification display
+  const visibleMessages = messages.filter(msg => !clearedMessages.includes(msg._id));
+  const visibleUnreadCount = visibleMessages.length;
 
   const sidebarItems = [
     {
@@ -127,7 +153,7 @@ const AdminPanel = ({ children }) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ),
-      badge: unreadCount,
+      badge: visibleUnreadCount, // Show only non-cleared messages count
     },
     {
       name: "Settings",
@@ -198,9 +224,9 @@ const AdminPanel = ({ children }) => {
                   <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
-                  {unreadCount > 0 && (
+                  {visibleUnreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-                      {unreadCount > 9 ? '9+' : unreadCount}
+                      {visibleUnreadCount > 9 ? '9+' : visibleUnreadCount}
                     </span>
                   )}
                 </button>
@@ -215,25 +241,25 @@ const AdminPanel = ({ children }) => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
                         <h3 className="font-semibold text-white">Notifications</h3>
-                        {unreadCount > 0 && (
+                        {visibleUnreadCount > 0 && (
                           <span className="bg-white/30 text-white text-xs px-2 py-0.5 rounded-full">
-                            {unreadCount}
+                            {visibleUnreadCount}
                           </span>
                         )}
                       </div>
-                      {messages.length > 0 && (
+                      {visibleMessages.length > 0 && (
                         <button
-                          onClick={handleClearAll}
+                          onClick={handleClearAllClick}
                           className="text-xs text-white/90 hover:text-white underline"
                         >
-                          Close
+                          Clear All
                         </button>
                       )}
                     </div>
 
                     {/* Notifications List */}
                     <div className="max-h-96 overflow-y-auto">
-                      {messages.length === 0 ? (
+                      {visibleMessages.length === 0 ? (
                         <div className="p-8 text-center">
                           <svg className="w-12 h-12 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
@@ -242,7 +268,7 @@ const AdminPanel = ({ children }) => {
                         </div>
                       ) : (
                         <>
-                          {messages.slice(0, 5).map((message, index) => (
+                          {visibleMessages.slice(0, 5).map((message, index) => (
                             <div
                               key={message._id || index}
                               onClick={() => handleNotificationClick(message._id)}
@@ -269,13 +295,13 @@ const AdminPanel = ({ children }) => {
                               </div>
                             </div>
                           ))}
-                          {messages.length > 5 && (
+                          {visibleMessages.length > 5 && (
                             <Link
                               to="/admin/messages"
                               onClick={() => setNotificationOpen(false)}
                               className="block p-3 text-center text-sm font-medium text-pink-600 hover:bg-pink-50 transition-colors"
                             >
-                              View all {messages.length} messages
+                              View all {visibleMessages.length} messages
                             </Link>
                           )}
                         </>
@@ -466,6 +492,54 @@ const AdminPanel = ({ children }) => {
           </div>
         </main>
       </div>
+
+      {/* Clear All Confirmation Modal */}
+      {showClearAllModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
+                <svg
+                  className="w-8 h-8 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+
+              <h3 className="text-xl font-bold text-gray-800 text-center mb-2">
+                Clear All Notifications?
+              </h3>
+              <p className="text-gray-600 text-center mb-6">
+                Are you sure you want to clear all {visibleMessages.length} message notifications? This action cannot be undone.
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleCancelClearAll}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={handleConfirmClearAll}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                >
+                  Clear All
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes slideDown {

@@ -470,8 +470,367 @@ const AdminProducts = () => {
         </div>
       </div>
 
-      {/* Modals remain the same - Edit, Delete, Preview modals */}
-      {/* ... (keep all your existing modals) ... */}
+      {/* Edit Product Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-pink-500 to-red-500 px-6 py-4 flex items-center justify-between z-10">
+              <h2 className="text-xl font-bold text-white">Edit Product</h2>
+              <button
+                onClick={handleCloseModal}
+                className="p-2 hover:bg-white/20 rounded-lg transition-colors text-white"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              {/* Image Upload */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Product Image</label>
+                <div className="flex items-center gap-4">
+                  {imagePreview && (
+                    <img src={imagePreview} alt="Preview" className="w-24 h-24 object-cover rounded-lg border-2 border-gray-200" />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Form Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Product Name *</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Brand *</label>
+                  <input
+                    type="text"
+                    name="brand"
+                    value={formData.brand}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Color *</label>
+                  <input
+                    type="text"
+                    name="color"
+                    value={formData.color}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Material *</label>
+                  <input
+                    type="text"
+                    name="material"
+                    value={formData.material}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Length *</label>
+                  <input
+                    type="text"
+                    name="length"
+                    value={formData.length}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Category *</label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((cat, idx) => (
+                      <option key={idx} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Price *</label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    required
+                    min="0"
+                    step="0.01"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Stock *</label>
+                  <input
+                    type="number"
+                    name="stock"
+                    value={formData.stock}
+                    onChange={handleInputChange}
+                    required
+                    min="0"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Ratings</label>
+                  <input
+                    type="number"
+                    name="ratings"
+                    value={formData.ratings}
+                    onChange={handleInputChange}
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Reviews</label>
+                  <input
+                    type="number"
+                    name="reviews"
+                    value={formData.reviews}
+                    onChange={handleInputChange}
+                    min="0"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="instock"
+                  checked={formData.instock}
+                  onChange={handleInputChange}
+                  className="w-4 h-4 text-pink-600 rounded border-gray-300 focus:ring-pink-500"
+                />
+                <label className="text-sm font-semibold text-gray-700">In Stock</label>
+              </div>
+
+              {/* Form Actions */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={handleCloseModal}
+                  className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUpdating}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-xl hover:from-pink-600 hover:to-red-600 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isUpdating ? "Updating..." : "Update Product"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && productToDelete && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 text-center mb-2">Delete Product?</h3>
+              <p className="text-gray-600 text-center mb-6">
+                Are you sure you want to delete <span className="font-semibold">{productToDelete.name}</span>? This action cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleDeleteCancel}
+                  disabled={isDeleting}
+                  className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-semibold disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  disabled={isDeleting}
+                  className="flex-1 px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Preview Modal */}
+      {showPreviewModal && previewProduct && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-pink-500 to-purple-600 px-6 py-4 flex items-center justify-between z-10">
+              <h2 className="text-xl font-bold text-white">Product Details</h2>
+              <button
+                onClick={handleClosePreview}
+                className="p-2 hover:bg-white/20 rounded-lg transition-colors text-white"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Product Image */}
+                <div>
+                  <img
+                    src={`${baseURL}/uploads/products/${previewProduct.image}`}
+                    alt={previewProduct.name}
+                    className="w-full h-96 object-cover rounded-xl shadow-lg"
+                  />
+                </div>
+
+                {/* Product Details */}
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-800">{previewProduct.name}</h3>
+                    <p className="text-lg text-gray-600 mt-1">{previewProduct.brand}</p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(getStatus(previewProduct.stock))}`}>
+                      {getStatus(previewProduct.stock)}
+                    </span>
+                    <span className="px-4 py-2 bg-gray-100 rounded-full text-sm font-semibold text-gray-700">
+                      {previewProduct.category}
+                    </span>
+                  </div>
+
+                  <div className="space-y-3 pt-4">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">Price</span>
+                      <span className="text-lg font-bold text-pink-600">₹{previewProduct.price}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">Color</span>
+                      <span className="text-sm font-semibold text-gray-800">{previewProduct.color}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">Material</span>
+                      <span className="text-sm font-semibold text-gray-800">{previewProduct.material}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">Length</span>
+                      <span className="text-sm font-semibold text-gray-800">{previewProduct.length}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">Stock</span>
+                      <span className="text-sm font-semibold text-gray-800">{previewProduct.stock} units</span>
+                    </div>
+
+                    {previewProduct.ratings && (
+                      <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <span className="text-sm font-medium text-gray-600">Ratings</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-sm font-semibold text-gray-800">{previewProduct.ratings}</span>
+                          <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+
+                    {previewProduct.reviews && (
+                      <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <span className="text-sm font-medium text-gray-600">Reviews</span>
+                        <span className="text-sm font-semibold text-gray-800">{previewProduct.reviews} reviews</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      onClick={() => {
+                        handleClosePreview();
+                        handleEditClick(previewProduct);
+                      }}
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all font-semibold flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Edit Product
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleClosePreview();
+                        handleDeleteClick(previewProduct);
+                      }}
+                      className="px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all font-semibold flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminPanel>
   );
 };
