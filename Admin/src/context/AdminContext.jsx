@@ -1,14 +1,17 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { getAllOrders, getProducts, getContactMessage } from "../interceptor/interceptor";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { getAllOrders, getProducts, getContactMessage, getUsers } from "../interceptor/interceptor";
 
 const AdminDataContext = createContext(null);
 
 export const AdminProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]);
   const [userLoading, setUserLoading] = useState(true);
   const [ordersLoading, setOrdersLoading] = useState(false);
-  const [messageLoading, setMessageLoading] = useState(true);
+  const [messageLoading, setMessageLoading] = useState(false);
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [usersLoading, setUsersLoading] = useState(false);
   const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -17,87 +20,115 @@ export const AdminProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (err) {
+        console.error("Error parsing user:", err);
+        localStorage.removeItem("user");
+      }
     }
     setUserLoading(false);
   }, []);
 
-  // Fetch all orders (ADMIN ONLY)
-  useEffect(() => {
+  // Fetch users function
+  const fetchUsers = useCallback(async () => {
     if (!user) return;
     
-    const fetchOrders = async () => {
-      try {
-        setOrdersLoading(true);
-        const res = await getAllOrders();
-        setOrders(res?.data?.orders || []);
-        console.log("Admin context", res.data.orders);
-      } catch (err) {
-        setError(err.response?.data?.message || err.message);
-      } finally {
-        setOrdersLoading(false);
-      }
-    };
-
-    if (user?.role === "admin") {
-      fetchOrders();
+    try {
+      setUsersLoading(true);
+      const res = await getUsers();
+      setUsers(res?.data || []);
+    } catch (err) {
+      console.error("Users fetch error:", err.message);
+    } finally {
+      setUsersLoading(false);
     }
   }, [user]);
 
-  // Fetch products
-  useEffect(() => {
+  // Fetch products function
+  const fetchProducts = useCallback(async () => {
     if (!user) return;
     
-    const fetchProducts = async () => {
-      try {
-        const res = await getProducts();
-        setProducts(res?.data?.products || res?.data?.data || []);
-      } catch (err) {
-        console.log("Product fetch error:", err.message);
-      }
-    };
-    
-    fetchProducts();
+    try {
+      setProductsLoading(true);
+      const res = await getProducts();
+      setProducts(res?.data?.products || res?.data?.data || []);
+    } catch (err) {
+      console.error("Product fetch error:", err.message);
+    } finally {
+      setProductsLoading(false);
+    }
   }, [user]);
 
-  // Fetch messages
-  useEffect(() => {
+  // Fetch orders function
+  const fetchOrders = useCallback(async () => {
+    if (!user || user.role !== "admin") return;
+    
+    try {
+      setOrdersLoading(true);
+      const res = await getAllOrders();
+      setOrders(res?.data?.orders || []);
+    } catch (err) {
+      console.error("Orders fetch error:", err);
+      setError(err.response?.data?.message || err.message);
+    } finally {
+      setOrdersLoading(false);
+    }
+  }, [user]);
+
+  // Fetch messages function
+  const fetchMessages = useCallback(async () => {
     if (!user) return;
     
-    const fetchMessages = async () => {
-      try {
-        setMessageLoading(true);
-        const response = await getContactMessage();
-        setMessages(response.data.data || []);
-        setError(null);
-      } catch (err) {
-        setError("Failed to load messages");
-        console.error("Error fetching messages:", err);
-      } finally {
-        setMessageLoading(false);
-      }
-    };
-    
-    fetchMessages();
+    try {
+      setMessageLoading(true);
+      const response = await getContactMessage();
+      setMessages(response.data.data || []);
+      setError(null);
+    } catch (err) {
+      console.error("Messages fetch error:", err);
+      setError("Failed to load messages");
+    } finally {
+      setMessageLoading(false);
+    }
   }, [user]);
+
+  // Initial data fetch when user is loaded
+  useEffect(() => {
+    if (!user) return;
+
+    // Fetch all data in parallel
+    Promise.all([
+      fetchUsers(),
+      fetchProducts(),
+      fetchOrders(),
+      fetchMessages()
+    ]);
+  }, [user, fetchUsers, fetchProducts, fetchOrders, fetchMessages]);
 
   // Login
-  const login = (data) => {
+  const login = useCallback((data) => {
     localStorage.setItem("user", JSON.stringify(data));
     localStorage.setItem("token", data.token);
     localStorage.setItem("role", data.role);
     setUser(data);
-  };
+  }, []);
 
   // Logout
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.clear();
     setUser(null);
     setOrders([]);
     setMessages([]);
     setProducts([]);
+    setUsers([]);
     setError(null);
-  };
+  }, []);
+
+  // Refetch messages
+  const refetchMessages = useCallback(async () => {
+    await fetchMessages();
+  }, [fetchMessages]);
 
   return (
     <AdminDataContext.Provider
@@ -106,13 +137,21 @@ export const AdminProvider = ({ children }) => {
         orders,
         products,
         messages,
+        users,
         userLoading,
         ordersLoading,
         messageLoading,
+        productsLoading,
+        usersLoading,
         error,
         login,
         logout,
-        setMessages, // Expose this for delete functionality
+        setMessages,
+        setUsers,
+        fetchUsers,
+        fetchProducts,
+        fetchOrders,
+        refetchMessages,
       }}
     >
       {children}

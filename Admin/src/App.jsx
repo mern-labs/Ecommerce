@@ -26,7 +26,7 @@ const App = () => {
         <Routes>
 
           {/* ================= DEFAULT ================= */}
-          <Route path="/" element={<Navigate to="/admin" replace />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
 
           {/* ================= AUTH ================= */}
           <Route path="/login" element={<Login />} />

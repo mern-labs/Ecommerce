@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAdminData } from "../context/AdminContext";
-import { getContactMessage } from "../interceptor/interceptor"; // Adjust path as needed
+import { getContactMessage } from "../interceptor/interceptor";
 import rotatingLogo from "../assets/saree logo.jpg";
 import cornerLogo from "../assets/Logo_Fonts.png";
 
@@ -16,6 +16,10 @@ const AdminPanel = ({ children }) => {
   const { user, logout } = useAdminData();
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Use ref to track if component is mounted and prevent multiple calls
+  const fetchIntervalRef = useRef(null);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => setMounted(true), []);
   
@@ -25,15 +29,12 @@ const AdminPanel = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch messages
-  useEffect(() => {
-    fetchMessages();
-    // Poll for new messages every 30 seconds
-    const interval = setInterval(fetchMessages, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchMessages = async () => {
+  // Memoized fetch messages function
+  const fetchMessages = useCallback(async () => {
+    // Prevent concurrent API calls
+    if (isFetchingRef.current) return;
+    
+    isFetchingRef.current = true;
     try {
       const response = await getContactMessage();
       const messageData = response.data.data || [];
@@ -41,8 +42,28 @@ const AdminPanel = ({ children }) => {
       setUnreadCount(messageData.length);
     } catch (error) {
       console.error("Error fetching messages:", error);
+    } finally {
+      isFetchingRef.current = false;
     }
-  };
+  }, []);
+
+  // Fetch messages on component mount and set up polling
+  useEffect(() => {
+    // Initial fetch
+    fetchMessages();
+    
+    // Set up polling interval (30 seconds)
+    fetchIntervalRef.current = setInterval(() => {
+      fetchMessages();
+    }, 30000);
+
+    // Cleanup interval on unmount
+    return () => {
+      if (fetchIntervalRef.current) {
+        clearInterval(fetchIntervalRef.current);
+      }
+    };
+  }, [fetchMessages]);
 
   // Close mobile menu when resizing to desktop
   useEffect(() => {
@@ -74,17 +95,16 @@ const AdminPanel = ({ children }) => {
 
   const handleClearAll = async () => {
     if (window.confirm("Are you sure you want to clear all notifications?")) {
-      // Add your clear all API call here
       setMessages([]);
       setUnreadCount(0);
       setNotificationOpen(false);
     }
   };
 
-  const handleNotificationClick = (messageId) => {
+  const handleNotificationClick = useCallback((messageId) => {
     navigate("/admin/messages");
     setNotificationOpen(false);
-  };
+  }, [navigate]);
 
   const sidebarItems = [
     {

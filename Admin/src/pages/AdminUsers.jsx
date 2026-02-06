@@ -1,91 +1,63 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import AdminPanel from "./AdminPanel";
-import { getUsers, deleteUser } from "../interceptor/interceptor";
+import { useAdminData } from "../context/AdminContext";
+import { deleteUser } from "../interceptor/interceptor";
 import { toast } from "react-toastify";
 
 const AdminUsers = () => {
+  const { users, usersLoading, setUsers, error, fetchUsers } = useAdminData();
+  
   const [searchQuery, setSearchQuery] = useState("");
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  // Memoized counts
+  const stats = useMemo(() => {
+    const totalUsers = users.length;
+    
+    const adminUsers = users.filter((u) => {
+      return u.role === "Admin" || 
+             u.role === "admin" || 
+             u.isAdmin === true ||
+             u.admin === true;
+    }).length;
 
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await getUsers();
-      console.log("Fetched users:", response.data); // Debug log
-      setUsers(response.data || []);
-    } catch (err) {
-      setError(err.message || "Failed to fetch users");
-      console.error("Error fetching users:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const regularUsers = users.filter((u) => {
+      return u.role !== "Admin" && 
+             u.role !== "admin" && 
+             u.isAdmin !== true &&
+             u.admin !== true;
+    }).length;
 
-  // Calculate counts with flexible field checking
-  const totalUsers = users.length;
-  
-  // Check for active users - handle different possible field names
-  const activeUsers = users.filter((u) => {
-    // Try different variations of status field
-    return u.status === "Active" || 
-           u.status === "active" || 
-           u.isActive === true ||
-           u.active === true;
-  }).length;
-  
-  // Check for admin users - handle different possible field names
-  const adminUsers = users.filter((u) => {
-    // Try different variations of role field
-    return u.role === "Admin" || 
-           u.role === "admin" || 
-           u.isAdmin === true ||
-           u.admin === true;
-  }).length;
+    return { totalUsers, adminUsers, regularUsers };
+  }, [users]);
 
-  // Regular users (non-admin users)
-  const regularUsers = users.filter((u) => {
-    // Try different variations of role field - exclude admins
-    return u.role !== "Admin" && 
-           u.role !== "admin" && 
-           u.isAdmin !== true &&
-           u.admin !== true;
-  }).length;
+  // Memoized filtered users
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => {
+      const matchesSearch =
+        user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch;
+    });
+  }, [users, searchQuery]);
 
-  // Filter users based on search query only
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchQuery.toLowerCase());
-
-    return matchesSearch;
-  });
-
-  // Handle delete user — opens the confirmation modal
+  // Handle delete user
   const handleDeleteUser = (user) => {
     setUserToDelete(user);
     setShowDeleteModal(true);
   };
 
-  // Confirm delete — calls the API, then updates local state
+  // Confirm delete
   const confirmDelete = async () => {
     try {
       setDeleteLoading(true);
       await deleteUser(userToDelete._id);
 
-      // Remove the deleted user from local state
+      // Update local state
       setUsers((prev) => prev.filter((u) => u._id !== userToDelete._id));
 
-      // Close modal and reset
       setShowDeleteModal(false);
       setUserToDelete(null);
       toast.success("User deleted successfully");
@@ -101,20 +73,13 @@ const AdminUsers = () => {
     }
   };
 
-  const getStatusColor = (status) => {
-    return status === "Active"
-      ? "bg-green-100 text-green-700"
-      : "bg-gray-100 text-gray-700";
-  };
-
   const getRoleBadge = (role) => {
     return role === "Admin"
       ? "bg-pink-100 text-pink-700"
       : "bg-blue-100 text-blue-700";
   };
 
-  // Loading state
-  if (loading) {
+  if (usersLoading) {
     return (
       <AdminPanel>
         <div className="flex items-center justify-center h-96">
@@ -127,7 +92,6 @@ const AdminUsers = () => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <AdminPanel>
@@ -172,15 +136,14 @@ const AdminUsers = () => {
           </p>
         </div>
 
-        {/* Stats Cards - Only 3 cards now */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Total Users */}
           <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Total Users</p>
                 <h3 className="text-2xl font-bold text-gray-800 mt-1">
-                  {totalUsers}
+                  {stats.totalUsers}
                 </h3>
               </div>
               <div className="p-3 bg-blue-100 rounded-lg">
@@ -201,13 +164,12 @@ const AdminUsers = () => {
             </div>
           </div>
 
-          {/* Users (excluding admins) */}
           <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Users</p>
                 <h3 className="text-2xl font-bold text-gray-800 mt-1">
-                  {regularUsers}
+                  {stats.regularUsers}
                 </h3>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
@@ -228,13 +190,12 @@ const AdminUsers = () => {
             </div>
           </div>
 
-          {/* Admins */}
           <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Admins</p>
                 <h3 className="text-2xl font-bold text-gray-800 mt-1">
-                  {adminUsers}
+                  {stats.adminUsers}
                 </h3>
               </div>
               <div className="p-3 bg-pink-100 rounded-lg">
@@ -256,7 +217,7 @@ const AdminUsers = () => {
           </div>
         </div>
 
-        {/* Search Only - Status dropdown removed */}
+        {/* Search */}
         <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5">
           <div className="relative">
             <input
@@ -329,7 +290,7 @@ const AdminUsers = () => {
                       </td>
                       <td className="px-5 lg:px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-linear-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-semibold">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-semibold">
                             {user.name?.charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -353,7 +314,6 @@ const AdminUsers = () => {
                       </td>
                       <td className="px-5 lg:px-6 py-4">
                         <div className="flex items-center gap-2">
-                          {/* Delete button */}
                           <button
                             onClick={() => handleDeleteUser(user)}
                             className="p-2 hover:bg-red-50 rounded-lg transition-colors"
@@ -393,7 +353,7 @@ const AdminUsers = () => {
               <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                 Previous
               </button>
-              <button className="px-3 py-1.5 bg-linear-to-r from-pink-500 to-red-500 text-white rounded-lg text-sm font-medium">
+              <button className="px-3 py-1.5 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg text-sm font-medium">
                 1
               </button>
               <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
@@ -438,7 +398,6 @@ const AdminUsers = () => {
               </p>
 
               <div className="flex gap-3">
-                {/* Cancel button — closes modal, resets userToDelete */}
                 <button
                   onClick={() => {
                     setShowDeleteModal(false);
@@ -450,7 +409,6 @@ const AdminUsers = () => {
                   Cancel
                 </button>
 
-                {/* Delete button — calls confirmDelete, shows spinner while loading */}
                 <button
                   onClick={confirmDelete}
                   disabled={deleteLoading}

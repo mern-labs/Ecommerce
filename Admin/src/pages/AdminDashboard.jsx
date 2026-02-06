@@ -1,80 +1,60 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import AdminPanel from "./AdminPanel";
-import { getUsers, getProducts, getAllOrders } from "../interceptor/interceptor";
+import { useAdminData } from "../context/AdminContext";
 import apiInstance from "../interceptor/interceptor";
 
 const AdminDashboard = () => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [stats, setStats] = useState({
-    totalUsers: 0,
-    totalProducts: 0,
-    totalOrders: 0,
-    revenue: 0
-  });
-  const [recentOrders, setRecentOrders] = useState([]);
+  const { 
+    orders, 
+    products, 
+    messages,
+    ordersLoading, 
+    productsLoading, 
+    messageLoading,
+    fetchOrders,
+    fetchProducts,
+    refetchMessages,
+    error 
+  } = useAdminData();
+  
   const baseURL = apiInstance.defaults.baseURL;
 
-  // Fetch all data on component mount
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  // Check if any data is still loading
+  const loading = ordersLoading || productsLoading || messageLoading;
 
-  const fetchDashboardData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      // Fetch all data in parallel
-      const [usersRes, productsRes, ordersRes] = await Promise.all([
-        getUsers(),
-        getProducts(),
-        getAllOrders()
-      ]);
+  // Memoized stats calculation
+  const stats = useMemo(() => {
+    // Calculate revenue (sum of all order totals)
+    const totalRevenue = orders.reduce((sum, order) => {
+      return sum + (order.totalAmount || order.totalPrice || 0);
+    }, 0);
 
-      // Extract data - handle different response structures
-      // Check if data is in response.data.data or response.data
-      const users = usersRes.data?.data || usersRes.data?.users || usersRes.data || [];
-      const products = productsRes.data?.data || productsRes.data?.products || productsRes.data || [];
-      const orders = ordersRes.data?.data || ordersRes.data?.orders || ordersRes.data || [];
+    return {
+      totalUsers: messages.length, // Using messages as user count proxy
+      totalProducts: products.length,
+      totalOrders: orders.length,
+      revenue: totalRevenue
+    };
+  }, [orders, products, messages]);
 
-      console.log("Users Response:", usersRes.data);
-      console.log("Products Response:", productsRes.data);
-      console.log("Orders Response:", ordersRes.data);
-      console.log("Extracted Users:", users);
-      console.log("Extracted Products:", products);
-      console.log("Extracted Orders:", orders);
+  // Memoized recent orders (5 most recent, sorted by date)
+  const recentOrders = useMemo(() => {
+    if (!orders || orders.length === 0) return [];
+    
+    const sortedOrders = [...orders].sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    
+    return sortedOrders.slice(0, 5);
+  }, [orders]);
 
-      // Calculate revenue (sum of all order totals)
-      const totalRevenue = orders.reduce((sum, order) => {
-        return sum + (order.totalAmount || order.totalPrice || 0);
-      }, 0);
-
-      // Update stats
-      setStats({
-        totalUsers: Array.isArray(users) ? users.length : 0,
-        totalProducts: Array.isArray(products) ? products.length : 0,
-        totalOrders: Array.isArray(orders) ? orders.length : 0,
-        revenue: totalRevenue
-      });
-
-      // Get 5 most recent orders and sort by date (newest first)
-      if (Array.isArray(orders) && orders.length > 0) {
-        const sortedOrders = [...orders].sort((a, b) => {
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        });
-        setRecentOrders(sortedOrders.slice(0, 5));
-      } else {
-        setRecentOrders([]);
-      }
-      
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error);
-      console.error("Error details:", error.response?.data);
-      setError(error.message || "Failed to load dashboard data");
-    } finally {
-      setLoading(false);
-    }
+  // Refresh all dashboard data
+  const handleRefresh = async () => {
+    await Promise.all([
+      fetchOrders(),
+      fetchProducts(),
+      refetchMessages()
+    ]);
   };
 
   // Format date
@@ -140,10 +120,8 @@ const AdminDashboard = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  // Calculate percentage change (mock data - you can replace with actual previous month data)
-  const calculateChange = (current) => {
-    // For demo purposes, showing random positive changes
-    // In production, compare with previous period data
+  // Calculate percentage change (mock data)
+  const calculateChange = () => {
     const change = Math.floor(Math.random() * 20) + 5;
     return `+${change}%`;
   };
@@ -181,7 +159,7 @@ const AdminDashboard = () => {
             </svg>
             <p className="mt-4 text-red-600 font-semibold">{error}</p>
             <button
-              onClick={fetchDashboardData}
+              onClick={handleRefresh}
               className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
             >
               Retry
@@ -203,7 +181,7 @@ const AdminDashboard = () => {
           </div>
           <div className="flex items-center gap-3">
             <button 
-              onClick={fetchDashboardData}
+              onClick={handleRefresh}
               className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
             >
               <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,18 +204,18 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5 lg:p-6 hover:shadow-lg transition-all duration-300 group cursor-pointer">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <p className="text-sm lg:text-base text-gray-600 font-medium">Total Users</p>
+                <p className="text-sm lg:text-base text-gray-600 font-medium">Total Messages</p>
                 <h3 className="text-2xl lg:text-3xl font-bold text-gray-800 mt-2">
                   {stats.totalUsers.toLocaleString()}
                 </h3>
                 <div className="flex items-center mt-3">
                   <span className="text-xs lg:text-sm font-semibold text-green-600">
-                    {calculateChange(stats.totalUsers)}
+                    {calculateChange()}
                   </span>
                   <span className="text-xs lg:text-sm text-gray-500 ml-2">from last month</span>
                 </div>
               </div>
-              <div className="p-3 lg:p-4 rounded-xl bg-linear-to-br from-blue-500 to-blue-600 text-white group-hover:scale-110 transition-transform">
+              <div className="p-3 lg:p-4 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white group-hover:scale-110 transition-transform">
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
@@ -255,12 +233,12 @@ const AdminDashboard = () => {
                 </h3>
                 <div className="flex items-center mt-3">
                   <span className="text-xs lg:text-sm font-semibold text-green-600">
-                    {calculateChange(stats.totalProducts)}
+                    {calculateChange()}
                   </span>
                   <span className="text-xs lg:text-sm text-gray-500 ml-2">from last month</span>
                 </div>
               </div>
-              <div className="p-3 lg:p-4 rounded-xl bg-linear-to-br from-purple-500 to-purple-600 text-white group-hover:scale-110 transition-transform">
+              <div className="p-3 lg:p-4 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white group-hover:scale-110 transition-transform">
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
@@ -278,12 +256,12 @@ const AdminDashboard = () => {
                 </h3>
                 <div className="flex items-center mt-3">
                   <span className="text-xs lg:text-sm font-semibold text-green-600">
-                    {calculateChange(stats.totalOrders)}
+                    {calculateChange()}
                   </span>
                   <span className="text-xs lg:text-sm text-gray-500 ml-2">from last month</span>
                 </div>
               </div>
-              <div className="p-3 lg:p-4 rounded-xl bg-linear-to-br from-green-500 to-green-600 text-white group-hover:scale-110 transition-transform">
+              <div className="p-3 lg:p-4 rounded-xl bg-gradient-to-br from-green-500 to-green-600 text-white group-hover:scale-110 transition-transform">
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
@@ -301,12 +279,12 @@ const AdminDashboard = () => {
                 </h3>
                 <div className="flex items-center mt-3">
                   <span className="text-xs lg:text-sm font-semibold text-green-600">
-                    {calculateChange(stats.revenue)}
+                    {calculateChange()}
                   </span>
                   <span className="text-xs lg:text-sm text-gray-500 ml-2">from last month</span>
                 </div>
               </div>
-              <div className="p-3 lg:p-4 rounded-xl bg-linear-to-br from-pink-500 to-red-500 text-white group-hover:scale-110 transition-transform">
+              <div className="p-3 lg:p-4 rounded-xl bg-gradient-to-br from-pink-500 to-red-500 text-white group-hover:scale-110 transition-transform">
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>

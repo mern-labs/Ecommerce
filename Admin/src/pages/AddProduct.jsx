@@ -146,9 +146,9 @@ const AddProduct = () => {
       toast.success('Product added successfully!');
       
       // Refresh the products list immediately
-      if (fetchProducts) {
+      
         await fetchProducts();
-      }
+      
       
       // Navigate back to products page
       navigate('/admin/products');
