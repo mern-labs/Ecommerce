@@ -17,6 +17,7 @@ import AdminSettings from "./pages/AdminSettings";
 import AddProduct from "./pages/AddProduct";
 
 import { ToastContainer } from "react-toastify";
+import AdminMessages from "./pages/AdminMessages";
 
 const App = () => {
   return (
@@ -25,7 +26,7 @@ const App = () => {
         <Routes>
 
           {/* ================= DEFAULT ================= */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/admin" replace />} />
 
           {/* ================= AUTH ================= */}
           <Route path="/login" element={<Login />} />
@@ -84,6 +85,14 @@ const App = () => {
             element={
               <ProtectedRoute adminOnly>
                 <AdminSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/messages"
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminMessages />
               </ProtectedRoute>
             }
           />

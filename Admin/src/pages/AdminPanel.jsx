@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAdminData } from "../context/AdminContext";
+import { getContactMessage } from "../interceptor/interceptor"; // Adjust path as needed
 import rotatingLogo from "../assets/saree logo.jpg";
 import cornerLogo from "../assets/Logo_Fonts.png";
 
@@ -8,6 +9,9 @@ const AdminPanel = ({ children }) => {
   const [mounted, setMounted] = useState(false);
   const [flip, setFlip] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   
   const { user, logout } = useAdminData();
   const navigate = useNavigate();
@@ -21,20 +25,65 @@ const AdminPanel = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
+  // Fetch messages
+  useEffect(() => {
+    fetchMessages();
+    // Poll for new messages every 30 seconds
+    const interval = setInterval(fetchMessages, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchMessages = async () => {
+    try {
+      const response = await getContactMessage();
+      const messageData = response.data.data || [];
+      setMessages(messageData);
+      setUnreadCount(messageData.length);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+
   // Close mobile menu when resizing to desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setMobileMenuOpen(false);
+        setNotificationOpen(false);
       }
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Close notification dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationOpen && !event.target.closest('.notification-dropdown')) {
+        setNotificationOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [notificationOpen]);
+
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const handleClearAll = async () => {
+    if (window.confirm("Are you sure you want to clear all notifications?")) {
+      // Add your clear all API call here
+      setMessages([]);
+      setUnreadCount(0);
+      setNotificationOpen(false);
+    }
+  };
+
+  const handleNotificationClick = (messageId) => {
+    navigate("/admin/messages");
+    setNotificationOpen(false);
   };
 
   const sidebarItems = [
@@ -73,6 +122,16 @@ const AdminPanel = ({ children }) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
       ),
+    },
+    {
+      name: "Messages",
+      path: "/admin/messages",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      ),
+      badge: unreadCount,
     },
     {
       name: "Settings",
@@ -130,9 +189,106 @@ const AdminPanel = ({ children }) => {
               </div>
             )}
 
-            {/* Right Side: Profile & Mobile Menu */}
+            {/* Right Side: Notifications, Profile & Mobile Menu */}
             <div className="flex items-center gap-2 lg:gap-3 shrink-0">
               
+              {/* Notification Icon */}
+              <div className="relative notification-dropdown">
+                <button
+                  onClick={() => setNotificationOpen(!notificationOpen)}
+                  className="relative p-2 hover:bg-gray-100 rounded-full transition-all"
+                  aria-label="Notifications"
+                >
+                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* Notification Dropdown */}
+                {notificationOpen && (
+                  <div className="absolute right-0 mt-2 md:mt-6 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden animate-slideDown">
+                    {/* Dropdown Header */}
+                    <div className="bg-gradient-to-r from-pink-500 to-rose-500 p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <h3 className="font-semibold text-white">Notifications</h3>
+                        {unreadCount > 0 && (
+                          <span className="bg-white/30 text-white text-xs px-2 py-0.5 rounded-full">
+                            {unreadCount}
+                          </span>
+                        )}
+                      </div>
+                      {messages.length > 0 && (
+                        <button
+                          onClick={handleClearAll}
+                          className="text-xs text-white/90 hover:text-white underline"
+                        >
+                          Clear All
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Notifications List */}
+                    <div className="max-h-96 overflow-y-auto">
+                      {messages.length === 0 ? (
+                        <div className="p-8 text-center">
+                          <svg className="w-12 h-12 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                          </svg>
+                          <p className="text-sm text-gray-500">No new messages</p>
+                        </div>
+                      ) : (
+                        <>
+                          {messages.slice(0, 5).map((message, index) => (
+                            <div
+                              key={message._id || index}
+                              onClick={() => handleNotificationClick(message._id)}
+                              className="p-4 border-b border-gray-100 hover:bg-pink-50 cursor-pointer transition-colors"
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 flex items-center justify-center text-white font-semibold text-sm shrink-0">
+                                  {message.name?.charAt(0).toUpperCase() || "?"}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-sm text-gray-800 truncate">
+                                    {message.name || "Anonymous"}
+                                  </p>
+                                  <p className="text-xs text-gray-600 truncate">
+                                    {message.email}
+                                  </p>
+                                  <p className="text-xs text-gray-500 line-clamp-2 mt-1">
+                                    {message.message}
+                                  </p>
+                                  <p className="text-xs text-gray-400 mt-1">
+                                    {new Date(message.createdAt).toLocaleDateString()}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          {messages.length > 5 && (
+                            <Link
+                              to="/admin/messages"
+                              onClick={() => setNotificationOpen(false)}
+                              className="block p-3 text-center text-sm font-medium text-pink-600 hover:bg-pink-50 transition-colors"
+                            >
+                              View all {messages.length} messages
+                            </Link>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Desktop Profile Dropdown */}
               {user && (
                 <div className="hidden lg:block relative group">
@@ -234,14 +390,21 @@ const AdminPanel = ({ children }) => {
                     <Link
                       to={item.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 font-semibold text-sm transition-all duration-300 ${
+                      className={`flex items-center justify-between gap-3 px-4 py-3 font-semibold text-sm transition-all duration-300 ${
                         isActive(item.path)
                           ? "bg-pink-100 text-pink-600 border-l-4 border-pink-500"
                           : "text-gray-700 hover:bg-pink-50 hover:text-pink-500"
                       }`}
                     >
-                      {item.icon}
-                      <span>{item.name}</span>
+                      <div className="flex items-center gap-3">
+                        {item.icon}
+                        <span>{item.name}</span>
+                      </div>
+                      {item.badge && item.badge > 0 && (
+                        <span className="bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                          {item.badge > 9 ? '9+' : item.badge}
+                        </span>
+                      )}
                     </Link>
                   </li>
                 ))}
@@ -274,16 +437,25 @@ const AdminPanel = ({ children }) => {
                 <li key={i}>
                   <Link
                     to={item.path}
-                    className={`flex items-center gap-3 xl:gap-4 px-4 py-3 xl:py-3.5 rounded-lg font-medium text-sm xl:text-base transition-all duration-300 group ${
+                    className={`flex items-center justify-between gap-3 xl:gap-4 px-4 py-3 xl:py-3.5 rounded-lg font-medium text-sm xl:text-base transition-all duration-300 group ${
                       isActive(item.path)
                         ? "bg-linear-to-r from-pink-500 to-red-500 text-white shadow-md"
                         : "text-gray-700 hover:bg-pink-50 hover:text-pink-600"
                     }`}
                   >
-                    <span className={`${isActive(item.path) ? "" : "group-hover:scale-110"} transition-transform shrink-0`}>
-                      {item.icon}
-                    </span>
-                    <span className="whitespace-nowrap">{item.name}</span>
+                    <div className="flex items-center gap-3 xl:gap-4">
+                      <span className={`${isActive(item.path) ? "" : "group-hover:scale-110"} transition-transform shrink-0`}>
+                        {item.icon}
+                      </span>
+                      <span className="whitespace-nowrap">{item.name}</span>
+                    </div>
+                    {item.badge && item.badge > 0 && (
+                      <span className={`text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center ${
+                        isActive(item.path) ? "bg-white text-pink-600" : "bg-red-500 text-white"
+                      }`}>
+                        {item.badge > 9 ? '9+' : item.badge}
+                      </span>
+                    )}
                   </Link>
                 </li>
               ))}

@@ -23,7 +23,6 @@ apiInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "/login"; // redirect to login
     }
     return Promise.reject(error);
   }
@@ -104,6 +103,16 @@ export const getAllOrders=async()=>{
 //  ------------------------Delete User
 export const deleteUser=async(id)=>{
   const res=await apiInstance.delete(`/api/delete/${id}`)
+  return res
+}
+
+export const getContactMessage = async()=>{
+  const res = await apiInstance.get("/api/contact")
+  return res
+}
+
+export const deleteMessage=async(id)=>{
+  const res=await apiInstance.delete(`/api/contact/${id}`)
   return res
 }
 
