@@ -15,6 +15,7 @@ export const AdminProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Load user from localStorage
   useEffect(() => {
@@ -83,7 +84,9 @@ export const AdminProvider = ({ children }) => {
     try {
       setMessageLoading(true);
       const response = await getContactMessage();
-      setMessages(response.data.data || []);
+      const messageData = response.data.data || [];
+      setMessages(messageData);
+      setUnreadCount(messageData.length);
       setError(null);
     } catch (err) {
       console.error("Messages fetch error:", err);
@@ -122,6 +125,7 @@ export const AdminProvider = ({ children }) => {
     setMessages([]);
     setProducts([]);
     setUsers([]);
+    setUnreadCount(0);
     setError(null);
   }, []);
 
@@ -144,13 +148,16 @@ export const AdminProvider = ({ children }) => {
         productsLoading,
         usersLoading,
         error,
+        unreadCount,
         login,
         logout,
         setMessages,
         setUsers,
+        setUnreadCount,
         fetchUsers,
         fetchProducts,
         fetchOrders,
+        fetchMessages,
         refetchMessages,
       }}
     >

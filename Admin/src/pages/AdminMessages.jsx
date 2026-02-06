@@ -8,7 +8,7 @@ const AdminMessages = () => {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [toast, setToast] = useState(null);
 
-  const { messages, messageLoading, setMessages, refetchMessages } = useAdminData();
+  const { messages, messageLoading, setMessages, setUnreadCount, refetchMessages } = useAdminData();
 
   const showToast = (message, type = "success") => {
     setToast({ message, type });
@@ -18,7 +18,10 @@ const AdminMessages = () => {
   const handleDelete = async (messageId) => {
     try {
       await deleteMessage(messageId);
-      setMessages(messages.filter(msg => msg._id !== messageId));
+      const updatedMessages = messages.filter(msg => msg._id !== messageId);
+      setMessages(updatedMessages);
+      setUnreadCount(updatedMessages.length);
+      
       if (selectedMessage?._id === messageId) {
         setSelectedMessage(null);
       }
@@ -271,11 +274,11 @@ const AdminMessages = () => {
 
         {/* Toast Notification - Top Right */}
         {toast && (
-          <div className="fixed top-6 right-6 z-50 animate-slide-in">
-            <div className={`rounded-xl shadow-lg px-6 py-4 flex items-center gap-3 min-w-75 ${
+          <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
+            <div className={`rounded-xl shadow-2xl px-6 py-4 flex items-center gap-3 min-w-75 ${
               toast.type === "success" 
-                ? "bg-green-500 text-white" 
-                : "bg-red-500 text-white"
+                ? "bg-linear-to-r from-green-500 to-emerald-500 text-white" 
+                : "bg-linear-to-r from-red-500 to-rose-500 text-white"
             }`}>
               <span className="text-2xl">
                 {toast.type === "success" ? "✓" : "✕"}
@@ -296,6 +299,22 @@ const AdminMessages = () => {
 
   return (
     <AdminPanel>
+      <style jsx>{`
+        @keyframes slide-in-right {
+          from {
+            opacity: 0;
+            transform: translateX(100%);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
+        .animate-slide-in-right {
+          animation: slide-in-right 0.4s ease-out;
+        }
+      `}</style>
       {renderContent()}
     </AdminPanel>
   );

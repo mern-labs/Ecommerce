@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAdminData } from "../context/AdminContext";
-import { getContactMessage } from "../interceptor/interceptor";
 import rotatingLogo from "../assets/saree logo.jpg";
 import cornerLogo from "../assets/Logo_Fonts.png";
 
@@ -10,16 +9,13 @@ const AdminPanel = ({ children }) => {
   const [flip, setFlip] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
   
-  const { user, logout } = useAdminData();
+  const { user, logout, messages, unreadCount, fetchMessages } = useAdminData();
   const navigate = useNavigate();
   const location = useLocation();
   
   // Use ref to track if component is mounted and prevent multiple calls
   const fetchIntervalRef = useRef(null);
-  const isFetchingRef = useRef(false);
 
   useEffect(() => setMounted(true), []);
   
@@ -29,28 +25,9 @@ const AdminPanel = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Memoized fetch messages function
-  const fetchMessages = useCallback(async () => {
-    // Prevent concurrent API calls
-    if (isFetchingRef.current) return;
-    
-    isFetchingRef.current = true;
-    try {
-      const response = await getContactMessage();
-      const messageData = response.data.data || [];
-      setMessages(messageData);
-      setUnreadCount(messageData.length);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    } finally {
-      isFetchingRef.current = false;
-    }
-  }, []);
-
-  // Fetch messages on component mount and set up polling
+  // Set up polling interval for messages (fetch every 30 seconds)
   useEffect(() => {
-    // Initial fetch
-    fetchMessages();
+    if (!user) return;
     
     // Set up polling interval (30 seconds)
     fetchIntervalRef.current = setInterval(() => {
@@ -63,7 +40,7 @@ const AdminPanel = ({ children }) => {
         clearInterval(fetchIntervalRef.current);
       }
     };
-  }, [fetchMessages]);
+  }, [user, fetchMessages]);
 
   // Close mobile menu when resizing to desktop
   useEffect(() => {
@@ -95,8 +72,7 @@ const AdminPanel = ({ children }) => {
 
   const handleClearAll = async () => {
     if (window.confirm("Are you sure you want to clear all notifications?")) {
-      setMessages([]);
-      setUnreadCount(0);
+      // Just close the notification - don't clear messages from database
       setNotificationOpen(false);
     }
   };
@@ -233,7 +209,7 @@ const AdminPanel = ({ children }) => {
                 {notificationOpen && (
                   <div className="absolute right-0 mt-2 md:mt-6 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden animate-slideDown">
                     {/* Dropdown Header */}
-                    <div className="bg-gradient-to-r from-pink-500 to-rose-500 p-4 flex items-center justify-between">
+                    <div className="bg-linear-to-r from-pink-500 to-rose-500 p-4 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -250,7 +226,7 @@ const AdminPanel = ({ children }) => {
                           onClick={handleClearAll}
                           className="text-xs text-white/90 hover:text-white underline"
                         >
-                          Clear All
+                          Close
                         </button>
                       )}
                     </div>
@@ -273,7 +249,7 @@ const AdminPanel = ({ children }) => {
                               className="p-4 border-b border-gray-100 hover:bg-pink-50 cursor-pointer transition-colors"
                             >
                               <div className="flex items-start gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 flex items-center justify-center text-white font-semibold text-sm shrink-0">
+                                <div className="w-10 h-10 rounded-full bg-linear-to-r from-pink-500 to-rose-500 flex items-center justify-center text-white font-semibold text-sm shrink-0">
                                   {message.name?.charAt(0).toUpperCase() || "?"}
                                 </div>
                                 <div className="flex-1 min-w-0">
