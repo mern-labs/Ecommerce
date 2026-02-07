@@ -153,7 +153,7 @@ const AdminPanel = ({ children }) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ),
-      badge: visibleUnreadCount, // Show only non-cleared messages count
+      badge: visibleUnreadCount > 0 ? visibleUnreadCount : null, // Only show badge if count > 0
     },
     {
       name: "Settings",
@@ -176,7 +176,7 @@ const AdminPanel = ({ children }) => {
         <nav className="max-w-480 mx-auto px-4 sm:px-6 md:px-8 lg:px-8 xl:px-12 2xl:px-16 py-2 lg:py-3 xl:py-3.5">
           
           {/* Top Rotating Logo */}
-          <div className="w-full flex justify-center mb-2 lg:mb-3">
+          <div className="w-full flex flex-col items-center mb-2 lg:mb-3">
             <Link to="/admin/dashboard" className="flex items-center">
               <img
                 src={rotatingLogo}
@@ -191,7 +191,7 @@ const AdminPanel = ({ children }) => {
           </div>
 
           {/* Main Navbar Content */}
-          <div className="w-full flex items-center justify-between gap-3 lg:gap-4">
+          <div className="w-full relative flex items-center justify-between min-h-10 sm:min-h-11 lg:min-h-12">
             
             {/* Left: Corner Logo */}
             <Link to="/admin/dashboard" className="flex items-center shrink-0">
@@ -202,30 +202,30 @@ const AdminPanel = ({ children }) => {
               />
             </Link>
 
-            {/* Center: Welcome Message - Hidden on mobile and tablet */}
-            {user && (
-              <div className="hidden lg:flex flex-1 justify-center items-center px-4 min-w-0">
-                <h2 className="text-sm lg:text-base xl:text-lg font-semibold text-gray-700 truncate">
+            {/* Center: Welcome Message - Hidden on very small screens, centered on larger screens */}
+            <div className="absolute left-1/2 -translate-x-1/2 hidden sm:block">
+              {user && (
+                <h2 className="text-[11px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-semibold text-gray-700 text-center whitespace-nowrap px-2">
                   Welcome back, <span className="bg-linear-to-r from-pink-500 to-red-500 bg-clip-text text-transparent">{user.name}</span>!
                 </h2>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Right Side: Notifications, Profile & Mobile Menu */}
-            <div className="flex items-center gap-2 lg:gap-3 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 shrink-0">
               
               {/* Notification Icon */}
               <div className="relative notification-dropdown">
                 <button
                   onClick={() => setNotificationOpen(!notificationOpen)}
-                  className="relative p-2 hover:bg-gray-100 rounded-full transition-all"
+                  className="relative p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-all"
                   aria-label="Notifications"
                 >
-                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
                   {visibleUnreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                    <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 bg-red-500 text-white text-[10px] sm:text-xs font-bold rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center animate-pulse">
                       {visibleUnreadCount > 9 ? '9+' : visibleUnreadCount}
                     </span>
                   )}
@@ -233,16 +233,16 @@ const AdminPanel = ({ children }) => {
 
                 {/* Notification Dropdown */}
                 {notificationOpen && (
-                  <div className="absolute right-0 mt-2 md:mt-6 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden animate-slideDown">
+                  <div className="absolute right-0 mt-2 md:mt-6 w-72 sm:w-80 md:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden animate-slideDown max-w-[calc(100vw-2rem)]">
                     {/* Dropdown Header */}
-                    <div className="bg-linear-to-r from-pink-500 to-rose-500 p-4 flex items-center justify-between">
+                    <div className="bg-linear-to-r from-pink-500 to-rose-500 p-3 sm:p-4 flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
-                        <h3 className="font-semibold text-white">Notifications</h3>
+                        <h3 className="font-semibold text-white text-sm sm:text-base">Notifications</h3>
                         {visibleUnreadCount > 0 && (
-                          <span className="bg-white/30 text-white text-xs px-2 py-0.5 rounded-full">
+                          <span className="bg-white/30 text-white text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full">
                             {visibleUnreadCount}
                           </span>
                         )}
@@ -250,7 +250,7 @@ const AdminPanel = ({ children }) => {
                       {visibleMessages.length > 0 && (
                         <button
                           onClick={handleClearAllClick}
-                          className="text-xs text-white/90 hover:text-white underline"
+                          className="text-[10px] sm:text-xs text-white/90 hover:text-white underline"
                         >
                           Clear All
                         </button>
@@ -365,11 +365,11 @@ const AdminPanel = ({ children }) => {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-all shrink-0"
+                className="lg:hidden p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-all shrink-0"
                 aria-label="Toggle menu"
               >
                 <svg
-                  className="w-6 h-6 text-gray-700"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -422,7 +422,7 @@ const AdminPanel = ({ children }) => {
                         {item.icon}
                         <span>{item.name}</span>
                       </div>
-                      {item.badge && item.badge > 0 && (
+                      {item.badge && (
                         <span className="bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                           {item.badge > 9 ? '9+' : item.badge}
                         </span>
@@ -471,7 +471,7 @@ const AdminPanel = ({ children }) => {
                       </span>
                       <span className="whitespace-nowrap">{item.name}</span>
                     </div>
-                    {item.badge && item.badge > 0 && (
+                    {item.badge && (
                       <span className={`text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center ${
                         isActive(item.path) ? "bg-white text-pink-600" : "bg-red-500 text-white"
                       }`}>
