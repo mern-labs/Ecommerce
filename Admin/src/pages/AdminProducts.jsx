@@ -400,7 +400,7 @@ const AdminProducts = () => {
                         <td className="px-5 lg:px-6 py-4">
                           <div className="flex items-center gap-3">
                             <img
-                              src={`${baseURL}/uploads/products/${product.image}`}
+                              src={product.image}
                               alt={product.name}
                               className="w-12 h-12 object-cover rounded-lg"
                             />
@@ -730,7 +730,7 @@ const AdminProducts = () => {
                 {/* Product Image */}
                 <div>
                   <img
-                    src={`${baseURL}/uploads/products/${previewProduct.image}`}
+                    src={previewProduct.image}
                     alt={previewProduct.name}
                     className="w-full h-96 object-cover rounded-xl shadow-lg"
                   />
