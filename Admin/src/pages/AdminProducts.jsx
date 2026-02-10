@@ -2,13 +2,12 @@ import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminPanel from "./AdminPanel";
 import { useAdminData } from "../context/AdminContext";
-import apiInstance, { deleteProduct, updateProduct } from "../interceptor/interceptor";
+import apiInstance, { deleteProduct, login, updateProduct } from "../interceptor/interceptor";
 import { toast } from "react-toastify";
 
 const AdminProducts = () => {
   const navigate = useNavigate();
   const { products, fetchProducts, productsLoading } = useAdminData();
-  const baseURL = apiInstance.defaults.baseURL;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
@@ -110,7 +109,7 @@ const AdminProducts = () => {
       reviews: product.reviews ? product.reviews.toString() : "",
       instock: product.instock !== undefined ? product.instock : product.stock > 0,
     });
-    setImagePreview(`${baseURL}/uploads/products/${product.image}`);
+    setImagePreview(product.image);
     setShowModal(true);
   };
 
@@ -825,7 +824,7 @@ const AdminProducts = () => {
                       Delete
                     </button>
                   </div>
-                </div>
+                </div> 
               </div>
             </div>
           </div>

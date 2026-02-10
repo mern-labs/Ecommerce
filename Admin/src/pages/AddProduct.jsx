@@ -146,9 +146,7 @@ const AddProduct = () => {
       toast.success('Product added successfully!');
       
       // Refresh the products list immediately
-      
-        await fetchProducts();
-      
+      await fetchProducts();
       
       // Navigate back to products page
       navigate('/admin/products');
@@ -156,7 +154,14 @@ const AddProduct = () => {
     } catch (error) {
       console.error('Error adding product:', error);
       console.error('Error response:', error.response?.data);
-      toast.error(`Failed to add product: ${error.response?.data?.message || error.message}`);
+      
+      const errorMessage = 
+        error.response?.data?.message || 
+        error.response?.data?.error || 
+        error.message || 
+        'Failed to add product';
+      
+      toast.error(`Failed to add product: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }

@@ -68,7 +68,7 @@ const Login = () => {
         navigate("/home");
       }
     } catch (error) {
-      toast.success("Invalid Credentaials")
+      toast.error("Invalid Credentaials")
       setErrors({
         ...newErrors,
         api: error.response?.data?.message || "Invalid email or password"

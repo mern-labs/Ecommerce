@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiInstance = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "http://localhost:3000/api",
 });
 
 // ✅ Request interceptor to attach token
@@ -31,25 +31,25 @@ apiInstance.interceptors.response.use(
 
 // ---------------Get user --------------
 export const getUsers=async()=>{
-  const res= await apiInstance.get("/api/get/users");
+  const res= await apiInstance.get("/get/users");
   return res
 }
 
 
 // ---------------------- Auth ----------------------
 export const register = async ({ name, email, password }) => {
-  const res = await apiInstance.post("/api/register", { name, email, password });
+  const res = await apiInstance.post("/register", { name, email, password }); 
   return res;
 };
 
 export const login = async ({ email, password }) => {
-  const res = await apiInstance.post("/api/login", { email, password });
+  const res = await apiInstance.post("/login", { email, password });  
   return res;
 };
 
 // // ---------------------- Products ----------------------
 export const getProducts = async () => {
-  const res = await apiInstance.get("/api/products");
+  const res = await apiInstance.get("/products");
   console.log(res);
   return res;
 };
@@ -57,7 +57,7 @@ export const getProducts = async () => {
 // -------------------------Add producsts --------------
 
 export const createProduct = async (data) => {
-  const res = await apiInstance.post("/api/products", data,{
+  const res = await apiInstance.post("/products", data,{
     headers: {
       'Content-Type': 'multipart/form-data'
     }
@@ -67,7 +67,7 @@ export const createProduct = async (data) => {
 
 // ----------------------Delete products-----------------
 export const deleteProduct = async (productID) => {
-  const res = await apiInstance.delete(`/api/products/delete/${productID}`)
+  const res = await apiInstance.delete(`/products/${productID}`)
   return res;
 };
 
@@ -75,7 +75,7 @@ export const deleteProduct = async (productID) => {
 export const updateProduct = async (id, updateData) => {
   try {
     const res = await apiInstance.put(
-      `/api/products/update/${id}`,
+      `/products/${id}`,
       updateData,
       {
         headers: {
@@ -94,7 +94,7 @@ export const updateProduct = async (id, updateData) => {
 
 // --------------------------Get orders-------------------
 export const getAllOrders=async()=>{
-  const res=await apiInstance.get("/api/order/admin/orders")
+  const res=await apiInstance.get("/orders/admin/orders")
   console.log(res.data);
   return res
 }
@@ -102,17 +102,17 @@ export const getAllOrders=async()=>{
 
 //  ------------------------Delete User
 export const deleteUser=async(id)=>{
-  const res=await apiInstance.delete(`/api/delete/${id}`)
+  const res=await apiInstance.delete(`/delete/${id}`)
   return res
 }
 
 export const getContactMessage = async()=>{
-  const res = await apiInstance.get("/api/contact")
+  const res = await apiInstance.get("/contact")
   return res
 }
 
 export const deleteMessage=async(id)=>{
-  const res=await apiInstance.delete(`/api/contact/${id}`)
+  const res=await apiInstance.delete(`/contact/${id}`)
   return res
 }
 
