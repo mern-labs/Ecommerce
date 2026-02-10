@@ -31,6 +31,9 @@ app.use("/api",conRouter)
 
 dbConnected()
 
+console.log("EMAIL",process.env.EMAIL_USER);
+console.log("KEY",process.env.BREVO_API_KEY);
+
 const PORT=process.env.PORT
 app.listen(PORT,()=>{
   console.log(`server is running on ${PORT}`);

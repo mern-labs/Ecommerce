@@ -1,10 +1,12 @@
+// userController.js - Better error handling
 const userData = require("../model/userModel");
 const bcrypt = require("bcryptjs");
 const tokenGenerate = require("../utils/auth");
+const { sendWelcomeEmail } = require("../utils/sendMail");
 
 const register = async (req, res) => {
   try {
-    const { name, email, password ,role} = req.body;
+    const { name, email, password, role } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Enter all details" });
@@ -17,6 +19,14 @@ const register = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
 
+    // Try to send email but don't fail registration if email fails
+    try {
+      await sendWelcomeEmail(email, name);
+    } catch (emailError) {
+      console.error("⚠️ Failed to send welcome email, but continuing registration:", emailError.message);
+      // Don't throw - allow registration to complete even if email fails
+    }
+
     const user = await userData.create({
       name,
       email,
@@ -26,8 +36,8 @@ const register = async (req, res) => {
 
     res.status(201).json({ message: "Registration success", user });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Registration failed" });
+    console.error("Registration error:", error);
+    res.status(500).json({ message: "Registration failed", error: error.message });
   }
 };
 
@@ -47,26 +57,21 @@ const login = async (req, res) => {
     }
 
     const token = tokenGenerate(user);
-   
 
     res.status(200).json({
       message: "Login successful",
       data: {
-        id:user._id,
-        name:user.name,
+        id: user._id,
+        name: user.name,
         email: user.email,
-        role:user.role,
+        role: user.role,
         token,
       },
     });
   } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({ message: "Login failed" });
   }
 };
-
-// const getData = async (req, res) => {
-//   const user = await userData.findById(req.user.id);
-//   res.json({ message: "Verify Data", data: user });
-// };
 
 module.exports = { register, login };
