@@ -1,2 +1,2 @@
-echo ".env" >> Backend/.gitignore
-echo "node_modules/" >> Backend/.gitignore
+.env
+node_modules/
