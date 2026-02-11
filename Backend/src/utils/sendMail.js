@@ -130,9 +130,6 @@ const sendWelcomeEmail = async (email, name) => {
 
     return response.data;
   } catch (error) {
-    console.error("❌ Email sending failed:");
-    console.error("Status:", error.response?.status);
-    console.error("Error data:", error.response?.data);
     console.error("Error message:", error.message);
     throw error;
   }
