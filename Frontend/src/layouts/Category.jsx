@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import apiInstance, { getProducts } from "../interceptor/interceptor";
+import { getProducts } from "../interceptor/interceptor";
+import { useData } from "../context/Usecontext";
 
 const Category = () => {
+  const { products, setProducts } = useData();
   const navigate = useNavigate();
-  const baseURL = apiInstance.defaults.baseURL;
 
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  // ✅ Fetch products on component mount
   useEffect(() => {
+    // Extract categories from already-loaded context products
+    if (products && products.length > 0) {
+      const uniqueCategories = [
+        ...new Set(products.map((item) => item.category).filter(Boolean)),
+      ];
+      setCategories(uniqueCategories);
+      return; // ✅ Skip fetch — products already in context
+    }
+
+    // Only fetch if context is empty
     const fetchProducts = async () => {
       try {
         setLoading(true);
@@ -19,7 +28,6 @@ const Category = () => {
         const productsData = res.data || [];
         setProducts(productsData);
 
-        // Extract unique categories
         const uniqueCategories = [
           ...new Set(productsData.map((item) => item.category).filter(Boolean)),
         ];
@@ -34,23 +42,19 @@ const Category = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [products]); // ✅ React to products changes in context
 
-  // ✅ Loading state
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-100">
+      <div className="flex justify-center items-center min-h-screen">
         <p className="text-xl text-gray-500">Loading categories...</p>
       </div>
     );
   }
 
-  // ✅ Empty state
   if (!categories || categories.length === 0) {
     return (
-      <p className="text-center mt-10 text-gray-500">
-        No categories available
-      </p>
+      <p className="text-center mt-10 text-gray-500">No categories available</p>
     );
   }
 
@@ -65,7 +69,7 @@ const Category = () => {
           Discover styles curated just for you
         </p>
         <div className="mt-4 flex justify-center">
-          <span className="w-24 h-1 bg-linear-to-r from-pink-500 to-red-500 rounded-full"></span>
+          <span className="w-24 h-1 bg-gradient-to-r from-pink-500 to-red-500 rounded-full"></span>
         </div>
       </div>
 
@@ -88,11 +92,11 @@ const Category = () => {
               <img
                 src={categoryImage}
                 alt={category}
-                className="w-full h-100 object-cover transform group-hover:scale-110 transition duration-700"
+                className="w-full h-64 object-cover transform group-hover:scale-110 transition duration-700"
               />
 
               {/* Dark Gradient Overlay */}
-              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
 
               {/* Category Name */}
               <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-center">
